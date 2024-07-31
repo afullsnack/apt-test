@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react'
 import { Container, Main, Section } from '@/app/(app)/components/craft'
 import { Button } from '@/app/(app)/components/ui/button'
@@ -14,9 +16,12 @@ import {
 } from '@/app/(app)/components/ui/card'
 import { Input } from '@/app/(app)/components/ui/input'
 import { Separator } from '@/app/(app)/components/ui/separator'
+import { useRouter } from 'next/navigation'
 import logo from '@/app/(app)/assets/logo.png'
 
 export default function Code() {
+  const { push } = useRouter()
+
   return (
     <Main>
       <Section className="grid gap-8 grid-cols-1">
@@ -49,7 +54,7 @@ export default function Code() {
                 <Label htmlFor="password">Password</Label>
                 <Input id="password" type="password" />
               </div> */}
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full" onClick={() => push('/overview')}>
                   Login
                 </Button>
                 <div className="mt-4 text-center text-sm">
