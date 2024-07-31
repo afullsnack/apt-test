@@ -1,13 +1,14 @@
 import React from 'react'
 import { Inter } from 'next/font/google'
-import { Container, Layout, Section } from './components/craft'
+import { Container, Layout, Section } from '@/app/(app)/components/craft'
 
-import './global.css'
-import { Button } from './components/ui/button'
+import { Button } from '@/app/(app)/components/ui/button'
 import { Facebook } from 'lucide-react'
 import Link from 'next/link'
-import { cn } from './lib/utils'
-import { Separator } from './components/ui/separator'
+import { cn } from '@/app/(app)/lib/utils'
+import { Separator } from '@/app/(app)/components/ui/separator'
+import '../global.css'
+
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
