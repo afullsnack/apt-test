@@ -96,9 +96,6 @@ const DashboardLayout = ({ children }: Args) => {
                   >
                     <Calendar className="h-4 w-4" />
                     Test Taker
-                    {/* <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
-                    6
-                  </Badge> */}
                   </Link>
                   <Link
                     href="#"
@@ -168,15 +165,25 @@ const DashboardLayout = ({ children }: Args) => {
                       <span className="">Ruco Tech</span>
                     </Link>
                     <Link
-                      href="#"
-                      className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                      href="/overview"
+                      className={cn(
+                        'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
+                        {
+                          'bg-muted': pathname.includes('overview'),
+                        },
+                      )}
                     >
                       <Home className="h-4 w-4" />
                       Overview
                     </Link>
                     <Link
-                      href="#"
-                      className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                      href="/test"
+                      className={cn(
+                        'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
+                        {
+                          'bg-muted': pathname.includes('test'),
+                        },
+                      )}
                     >
                       <Calendar className="h-4 w-4" />
                       Test Taker
@@ -186,7 +193,13 @@ const DashboardLayout = ({ children }: Args) => {
                     </Link>
                     <Link
                       href="#"
-                      className="flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-primary"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        router.replace('/')
+                      }}
+                      className={cn(
+                        'flex items-center gap-3 rounded-lg px-3 py-2 text-primary transition-all hover:text-primary',
+                      )}
                     >
                       <LogOutIcon className="h-4 w-4" />
                       Logut{' '}
@@ -206,7 +219,7 @@ const DashboardLayout = ({ children }: Args) => {
                     Analytics
                   </Link> */}
                   </nav>
-                  <div className="mt-auto">
+                  {/* <div className="mt-auto">
                     <Card>
                       <CardHeader>
                         <CardTitle>Upgrade to Pro</CardTitle>
@@ -220,7 +233,7 @@ const DashboardLayout = ({ children }: Args) => {
                         </Button>
                       </CardContent>
                     </Card>
-                  </div>
+                  </div> */}
                 </SheetContent>
               </Sheet>
               <div className="w-full flex-1 flex flex-col">
