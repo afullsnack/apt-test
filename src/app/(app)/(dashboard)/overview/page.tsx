@@ -1,6 +1,4 @@
 import { Main, Section, Container } from '@/app/(app)/components/craft'
-
-// import { Badge } from "@/components/ui/badge"
 import { Card, CardTitle, CardHeader, CardContent } from '@/app/(app)/components/ui/card'
 import {
   Table,
@@ -10,7 +8,6 @@ import {
   TableHead,
   TableHeader,
 } from '@/app/(app)/components/ui/table'
-import { Badge } from '../../components/ui/badge'
 
 export default function Overview() {
   return (

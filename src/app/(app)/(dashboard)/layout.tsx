@@ -2,35 +2,14 @@
 
 import React from 'react'
 import { Inter } from 'next/font/google'
-import { Container, Layout, Section } from '@/app/(app)/components/craft'
+import { Layout } from '@/app/(app)/components/craft'
 import { Button } from '@/app/(app)/components/ui/button'
-import {
-  Bell,
-  Calendar,
-  CircleUser,
-  Facebook,
-  Home,
-  LineChart,
-  LogOutIcon,
-  Menu,
-  Package,
-  Package2,
-  Search,
-  ShoppingCart,
-  Users,
-} from 'lucide-react'
+import { Bell, Calendar, CircleUser, Home, LogOutIcon, Menu } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/app/(app)/lib/utils'
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/app/(app)/components/ui/card'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -39,10 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/app/(app)/components/ui/dropdown-menu'
-import { Input } from '@/app/(app)/components/ui/input'
-import { Badge } from '@/app/(app)/components/ui/badge'
 import { Sheet, SheetContent, SheetTrigger } from '@/app/(app)/components/ui/sheet'
-import { Separator } from '@/app/(app)/components/ui/separator'
 import '../global.css'
 import logo from '../assets/logo.png'
 
