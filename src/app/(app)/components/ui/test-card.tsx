@@ -10,7 +10,7 @@ type Args = {
   questionsCount: number
 }
 export const TestCard = ({ className, ...props }: Args) => (
-  <Card className={cn(className)}>
+  <Card className={cn(className, 'border border-border/45')}>
     <CardContent className="p-4 grid gap-2">
       <CardTitle>{props.title}</CardTitle>
       <div className="">
