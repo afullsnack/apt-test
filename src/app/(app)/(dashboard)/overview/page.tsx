@@ -8,6 +8,7 @@ import {
   TableHead,
   TableHeader,
 } from '@/app/(app)/components/ui/table'
+import { TestCard } from '../../components/ui/test-card'
 
 export default function Overview() {
   return (
@@ -124,8 +125,25 @@ export default function Overview() {
         <div className="flex items-center">
           <h1 className="text-lg font-semibold md:text-xl">Take Mock Test</h1>
         </div>
-        <Container className="!p-0 grid w-full flex-1">
-          <h1>cards</h1>
+        <Container className="!p-0 grid grid-cols-3 gap-2 w-full flex-1">
+          <TestCard
+            title="All Mighty Test"
+            description="Numerical reasoning tests demonstrate your ability to deal with numbers quickly and accurately. These tests contain questions that..."
+            testCount={50}
+            questionsCount={520}
+          />
+          <TestCard
+            title="All Mighty Test"
+            description="Numerical reasoning tests demonstrate your ability to deal with numbers quickly and accurately. These tests contain questions that..."
+            testCount={50}
+            questionsCount={520}
+          />
+          <TestCard
+            title="All Mighty Test"
+            description="Numerical reasoning tests demonstrate your ability to deal with numbers quickly and accurately. These tests contain questions that..."
+            testCount={50}
+            questionsCount={520}
+          />
         </Container>
       </Section>
     </Main>
