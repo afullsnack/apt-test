@@ -55,6 +55,7 @@ const DashboardLayout = ({ children }: Args) => {
                       'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
                       {
                         'bg-muted': pathname.includes('overview'),
+                        'text-foreground': pathname.includes('overview'),
                       },
                     )}
                   >
@@ -67,6 +68,7 @@ const DashboardLayout = ({ children }: Args) => {
                       'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
                       {
                         'bg-muted': pathname.includes('test'),
+                        'text-foreground': pathname.includes('test'),
                       },
                     )}
                   >
@@ -81,7 +83,7 @@ const DashboardLayout = ({ children }: Args) => {
                       router.replace('/')
                     }}
                     className={cn(
-                      'flex items-center gap-3 rounded-lg px-3 py-2 text-primary transition-all hover:text-primary',
+                      'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-destructive',
                     )}
                   >
                     <LogOutIcon className="h-4 w-4" />

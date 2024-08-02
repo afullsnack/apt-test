@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Card, CardTitle, CardFooter, CardContent } from './card'
+import { Card, CardTitle, CardHeader, CardFooter, CardContent } from './card'
 import { cn } from 'src/app/(app)/lib/utils'
 
 type Args = {
@@ -11,8 +11,10 @@ type Args = {
 }
 export const TestCard = ({ className, ...props }: Args) => (
   <Card className={cn(className, 'border border-border/45')}>
-    <CardContent className="p-4 grid gap-2">
+    <CardHeader className="!p-4">
       <CardTitle>{props.title}</CardTitle>
+    </CardHeader>
+    <CardContent className="p-4 grid gap-2">
       <div className="">
         <span className="text-balance text-sm font-nromal tracking-normal leading-3">
           {props.description}
