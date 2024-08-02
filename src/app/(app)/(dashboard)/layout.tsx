@@ -215,10 +215,19 @@ const DashboardLayout = ({ children }: Args) => {
                 </SheetContent>
               </Sheet>
               <div className="w-full flex-1 flex flex-col">
-                <h1 className="text-balance text-lg font-semibold">Hi {'Jake'}, Good Afternoon</h1>
-                <span className="text-balance text-sx font-normal">
-                  Lets learn something new today
-                </span>
+                {!pathname.includes('settings') && (
+                  <>
+                    <h1 className="text-balance text-lg font-semibold">
+                      Hi {'Jake'}, Good Afternoon
+                    </h1>
+                    <span className="text-balance text-sx font-normal">
+                      Lets learn something new today
+                    </span>
+                  </>
+                )}
+                {pathname.includes('settings') && (
+                  <h1 className="text-balance text-lg font-semibold">Account Details</h1>
+                )}
                 {/* <form>
                 <div className="relative">
                   <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
