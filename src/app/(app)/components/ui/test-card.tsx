@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Card, CardTitle, CardHeader, CardFooter, CardContent } from './card'
-import { cn } from 'src/app/(app)/lib/utils'
+import { cn } from '@app/lib/utils'
 
 type Args = {
   className?: string
