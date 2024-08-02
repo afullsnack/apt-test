@@ -230,7 +230,8 @@ const DashboardLayout = ({ children }: Args) => {
                 </div>
               </form> */}
               </div>
-              <div>
+              <div className="gap-2">
+                {/* TODO: Change to theme toggle icon button */}
                 <Button variant="outline" size="icon" className="ml-auto h-8 w-8">
                   <Bell className="h-4 w-4" />
                   <span className="sr-only">Toggle notifications</span>
@@ -245,12 +246,14 @@ const DashboardLayout = ({ children }: Args) => {
                   <DropdownMenuContent align="end">
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>Settings</DropdownMenuItem>
-                    <DropdownMenuItem>Password</DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem className="text-red-600 hover:text-white hover:bg-red-600">
-                      Logout
+                    <DropdownMenuItem onClick={() => router.push('/settings')}>
+                      Settings
                     </DropdownMenuItem>
+                    {/* <DropdownMenuItem>Password</DropdownMenuItem> */}
+                    <DropdownMenuSeparator />
+                    {/* <DropdownMenuItem className="text-red-600 hover:text-white hover:bg-red-600">
+                      Logout
+                    </DropdownMenuItem> */}
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
