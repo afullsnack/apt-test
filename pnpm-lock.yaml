@@ -46,6 +46,9 @@ importers:
       '@radix-ui/react-slot':
         specifier: ^1.1.0
         version: 1.1.0(react@19.0.0-rc-fb9a90fa48-20240614)(types-react@19.0.0-rc.0)
+      avvvatars-react:
+        specifier: ^0.4.2
+        version: 0.4.2(csstype@3.1.3)(react-dom@19.0.0-rc-fb9a90fa48-20240614(react@19.0.0-rc-fb9a90fa48-20240614))(react@19.0.0-rc-fb9a90fa48-20240614)
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.0
@@ -2055,6 +2058,12 @@ packages:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
     engines: {node: '>= 0.4'}
 
+  avvvatars-react@0.4.2:
+    resolution: {integrity: sha512-D/bnSM+P6pQi71dFeFVqQsqmv+ct5XG7uO2lvJoiksALpXLd6kPgpRR1SUQxFZJkJNrkmg0NPgbhIgJgOsDYRQ==}
+    peerDependencies:
+      react: '>= 16'
+      react-dom: '>= 16'
+
   axe-core@4.9.1:
     resolution: {integrity: sha512-QbUdXJVTpvUTHU7871ppZkdOLBeGUKBQWHkHrvN2V9IQWGMt61zf3B45BtzjxEJzYuj0JBjBZP/hmYS/R9pmAw==}
     engines: {node: '>=4'}
@@ -2990,6 +2999,11 @@ packages:
   globby@11.1.0:
     resolution: {integrity: sha512-jhIXaOzy1sb8IyocaruWSn1TjmnBVs8Ayhcy83rmxNJ8q2uWKCAj3CnJY+KpGSXCueAPc0i05kVvVKtP1t9S3g==}
     engines: {node: '>=10'}
+
+  goober@2.1.14:
+    resolution: {integrity: sha512-4UpC0NdGyAFqLNPnhCT2iHpza2q+RAY3GV85a/mRPdzyPQMsj0KmMMuetdIkzWRbJ+Hgau1EZztq8ImmiMGhsg==}
+    peerDependencies:
+      csstype: ^3.0.10
 
   gopd@1.0.1:
     resolution: {integrity: sha512-d65bNlIadxvpb/A2abVdlqKqV563juRnZ1Wtk6s1sIR8uNsXR70xqIzVqxVf1eTqDunwT2MkczEeaezCKTZhwA==}
@@ -7213,6 +7227,14 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.0.0
 
+  avvvatars-react@0.4.2(csstype@3.1.3)(react-dom@19.0.0-rc-fb9a90fa48-20240614(react@19.0.0-rc-fb9a90fa48-20240614))(react@19.0.0-rc-fb9a90fa48-20240614):
+    dependencies:
+      goober: 2.1.14(csstype@3.1.3)
+      react: 19.0.0-rc-fb9a90fa48-20240614
+      react-dom: 19.0.0-rc-fb9a90fa48-20240614(react@19.0.0-rc-fb9a90fa48-20240614)
+    transitivePeerDependencies:
+      - csstype
+
   axe-core@4.9.1: {}
 
   axios@1.4.0:
@@ -8338,6 +8360,10 @@ snapshots:
       ignore: 5.3.1
       merge2: 1.4.1
       slash: 3.0.0
+
+  goober@2.1.14(csstype@3.1.3):
+    dependencies:
+      csstype: 3.1.3
 
   gopd@1.0.1:
     dependencies:
