@@ -32,7 +32,7 @@ const Avatar = () => {
   return (
     <Section className="!p-0 grid gap-2">
       <div className="flex items-center">
-        <Avvvatars size={64} value="John Doe" />
+        <Avvvatars size={64} radius={10} value="John Doe" shadow={true} style="shape" />
       </div>
     </Section>
   )
@@ -96,7 +96,7 @@ const AccountSection = () => {
               )}
             />
             <Button type="submit" size={'lg'}>
-              Submit
+              Save changes
             </Button>
           </form>
         </Form>

@@ -19,8 +19,8 @@ import {
   DropdownMenuTrigger,
 } from '@/app/(app)/components/ui/dropdown-menu'
 import { Sheet, SheetContent, SheetTrigger } from '@/app/(app)/components/ui/sheet'
-import '../global.css'
-import logo from '../assets/logo.png'
+import '@app/global.css'
+import logo from '@app/assets/logo.png'
 
 const inter = Inter({
   subsets: ['latin'],
