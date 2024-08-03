@@ -1,3 +1,4 @@
+import { TestEntry } from '@/app/(app)/components/test-entry'
 import { Main, Section, Container } from '@app/components/craft'
 
 export default async function TestPage({ params }: { params: { slug: string[] } }) {
@@ -5,21 +6,38 @@ export default async function TestPage({ params }: { params: { slug: string[] } 
   const [test, section, number, ...props] = params.slug.slice(1)
 
   return (
-    <Main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-      <Section className="!p-0 grid gap-2">
-        <div className="flex items-center">
-          <h1 className="text-lg font-semibold md:text-xl">Overview</h1>
-        </div>
-        <Container className="!p-0 grid gap-2 w-full flex-1">
-          <h1>Test entry page</h1>
-          <span>
-            {test && `/${test}`}
-            {section && `/${section}`}
-            {number && `/${number}`}
-            {props && `/${props.join('/')}`}
-          </span>
-        </Container>
+    <Main className="flex flex-1 w-full flex-col gap-4">
+      <Section className="grid gap-2 bg-blue-600/75">
+        <div />
       </Section>
+      <TestEntry
+        title="All mighty test"
+        description="Lorem ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsumipsum"
+        sections={[
+          {
+            id: 1,
+            name: 'Quantitative Reasoning',
+            questionCount: 50,
+          },
+          {
+            id: 2,
+            name: 'Verbal Reasoning',
+            questionCount: 50,
+          },
+          {
+            id: 3,
+            name: 'English',
+            questionCount: 50,
+          },
+          {
+            id: 4,
+            name: 'Logic',
+            questionCount: 50,
+          },
+        ]}
+        totalQuestionCount={300}
+        attempts={2}
+      />
     </Main>
   )
 }
