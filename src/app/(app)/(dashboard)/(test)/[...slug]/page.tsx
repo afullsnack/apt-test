@@ -1,11 +1,12 @@
-import { TestEntry } from '@/app/(app)/components/test-entry'
+import { TestEntry } from '@app/components/test-entry'
+import { SectionEntry } from '@app/components/test-section-entry'
 import { Main, Section, Container } from '@app/components/craft'
 
 export default async function TestPage({ params }: { params: { slug: string[] } }) {
   console.log(params.slug, ':::from page')
-  const [test, section, number, ...props] = params.slug.slice(1)
+  const [test, section, question, ...props] = params.slug.slice(1)
 
-  console.log(test, section, number, ':::test taker')
+  console.log(test, section, question, ':::test taker')
 
   return (
     <Main className="flex flex-1 w-full flex-col gap-4">
@@ -14,28 +15,28 @@ export default async function TestPage({ params }: { params: { slug: string[] } 
       </Section>
 
       {/* test page entry */}
-      {test && !section && !number && (
+      {test && !section && !question && (
         <TestEntry
           title="All mighty test"
           description="Lorem ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsumipsum"
           sections={[
             {
-              id: 1,
+              id: 'quantitative-reasoning',
               name: 'Quantitative Reasoning',
               questionCount: 50,
             },
             {
-              id: 2,
+              id: 'verbal-reasoning',
               name: 'Verbal Reasoning',
               questionCount: 50,
             },
             {
-              id: 3,
+              id: 'english',
               name: 'English',
               questionCount: 50,
             },
             {
-              id: 4,
+              id: 'logic',
               name: 'Logic',
               questionCount: 50,
             },
@@ -45,7 +46,15 @@ export default async function TestPage({ params }: { params: { slug: string[] } 
         />
       )}
 
-      {test && section && !number && <div>Section entry</div>}
+      {test && section && !question && (
+        <SectionEntry
+          section={{
+            id: 'quantitative-reasoning',
+            name: 'Quantitative Reasoning',
+            questionCount: 50,
+          }}
+        />
+      )}
     </Main>
   )
 }

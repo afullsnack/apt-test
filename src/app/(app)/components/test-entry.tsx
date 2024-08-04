@@ -8,8 +8,8 @@ import { RadioGroup, RadioGroupItem } from './ui/radio-group'
 import { Label } from './ui/label'
 import { usePathname, useRouter } from 'next/navigation'
 
-type TestSection = {
-  id: number
+export type TestSection = {
+  id: string
   name: string
   questionCount: number
 }
@@ -27,7 +27,7 @@ export const TestEntry: FC<{
 
   return (
     <Section className="grid w-full place-items-center">
-      <Container className="bg-background border border-border max-w-[620px] dark:bg-foreground flex flex-col p-8 items-center justify-center space-y-6">
+      <Container className="bg-background border border-border min-w-[620px] dark:bg-foreground flex flex-col p-8 items-center justify-center space-y-6">
         <h1 className="font-bold text-xl">{title}</h1>
         <Separator className="bg-[#1FA1E0] my-1" />
         <div className="flex justify-center gap-6 w-full px-8 items-center">
