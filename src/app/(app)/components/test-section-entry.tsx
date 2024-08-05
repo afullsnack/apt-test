@@ -14,9 +14,10 @@ type Args = {
 export const SectionEntry = ({ section }: Args) => {
   const router = useRouter()
   const pathname = usePathname()
+  console.log(pathname, ':::pathname in section component')
 
   return (
-    <Section className="grid w-full place-items-center">
+    <Section className="grid w-full place-items-center px-32">
       <Container className="bg-background border border-border min-w-[620px] dark:bg-foreground flex flex-col p-8 items-center justify-center space-y-6">
         <div className="grid gap-2 place-items-center">
           <h1 className="font-bold text-xl text-center">{section.name}</h1>
@@ -39,7 +40,14 @@ export const SectionEntry = ({ section }: Args) => {
             ))}
           </ul>
         </div>
-        <Button>Start test</Button>
+        <Button
+          onClick={() => {
+            router.prefetch(`${pathname}/1`)
+            router.push(`${pathname}/1`)
+          }}
+        >
+          Start test
+        </Button>
       </Container>
     </Section>
   )
