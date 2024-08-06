@@ -21,7 +21,7 @@ export default async function TestPage({ params }: { params: { slug: string[] } 
       )}
       {test && section && question && (
         <Section className="!p-8 w-full border border-blue-300 flex items-center justify-between">
-          <h1>{section}</h1>
+          <h1 className="text-3xl font-semibold capitalize">{section}</h1>
           {question !== 'finish' && (
             <>
               <span>00:00</span>

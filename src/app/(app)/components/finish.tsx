@@ -17,7 +17,7 @@ export const FinishTest = () => {
         <Separator className="w-full border-2 border-green-600" />
         <div className="bg-[#F1F2F4] p-4 grid items-center gap-2 w-full rounded-sm">
           <h1 className="font-semibold text-2xl">Your score: {82}%</h1>
-          <span>Your average score for this test is 60%</span>
+          <span className="text-sm font-normal">Your average score for this test is 60%</span>
         </div>
         <p>
           You’re on your way. but we suggest you keep practicing. Our dashboard analytic allows you
