@@ -18,7 +18,7 @@ export default function Overview() {
         <div className="flex items-center">
           <h1 className="text-lg font-semibold md:text-xl">Overview</h1>
         </div>
-        <Container className="!p-0 grid grid-cols-4 gap-2 w-full flex-1">
+        <Container className="!p-0 !mx-0 !max-w-full grid grid-cols-4 gap-2 w-full flex-1">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total test taken</CardTitle>
@@ -61,7 +61,7 @@ export default function Overview() {
         <div className="flex items-center">
           <h1 className="text-lg font-semibold md:text-xl">Recent activity</h1>
         </div>
-        <Container className="!p-0 grid w-full flex-1">
+        <Container className="!p-0 !mx-0 !max-w-full grid w-full flex-1">
           <Table>
             <TableHeader>
               <TableRow>
@@ -126,7 +126,7 @@ export default function Overview() {
         <div className="flex items-center">
           <h1 className="text-lg font-semibold md:text-xl">Take Mock Test</h1>
         </div>
-        <Container className="!p-0 grid grid-cols-3 gap-2 w-full flex-1">
+        <Container className="!p-0 !mx-0 !max-w-full grid grid-cols-3 gap-2 w-full">
           <Link href="/test/all-mighty-test" passHref>
             <TestCard
               title="All Mighty Test"

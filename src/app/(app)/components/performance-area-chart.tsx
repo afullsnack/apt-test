@@ -147,10 +147,10 @@ export function PerformanceChart() {
     <Card>
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-3 sm:flex-row">
         <div className="grid flex-1 gap-1 text-center sm:text-left">
-          <CardTitle>Area Chart - Interactive</CardTitle>
-          <CardDescription>Showing total visitors for the last 3 months</CardDescription>
+          <CardTitle>Overall Performance</CardTitle>
+          {/* <CardDescription>Showing total visitors for the last 3 months</CardDescription> */}
         </div>
-        <Select value={timeRange} onValueChange={setTimeRange}>
+        {/* <Select value={timeRange} onValueChange={setTimeRange}>
           <SelectTrigger className="w-[160px] rounded-lg sm:ml-auto" aria-label="Select a value">
             <SelectValue placeholder="Last 3 months" />
           </SelectTrigger>
@@ -165,7 +165,7 @@ export function PerformanceChart() {
               Last 7 days
             </SelectItem>
           </SelectContent>
-        </Select>
+        </Select> */}
       </CardHeader>
       <CardContent className="px-2 pt-4">
         <ChartContainer config={chartConfig} className="aspect-auto h-[250px] w-full">

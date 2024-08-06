@@ -17,6 +17,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@app/components/ui/chart'
+import { Button } from './ui/button'
 const chartData = [{ month: 'january', desktop: 1260, mobile: 570 }]
 
 const chartConfig = {
@@ -36,10 +37,10 @@ export function TestScoreChart() {
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Radial Chart - Stacked</CardTitle>
+        <CardTitle>Riz's Score</CardTitle>
         {/* <CardDescription>January - June 2024</CardDescription> */}
       </CardHeader>
-      <CardContent className="flex flex-1 items-center pb-0">
+      <CardContent className="flex flex-1 flex-col items-center pb-0">
         <ChartContainer config={chartConfig} className="mx-auto aspect-square w-full max-w-[250px]">
           <RadialBarChart data={chartData} endAngle={180} innerRadius={80} outerRadius={130}>
             <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
@@ -85,15 +86,13 @@ export function TestScoreChart() {
             />
           </RadialBarChart>
         </ChartContainer>
+        <div className="flex-col gap-4 flex">
+          <p className="tracking-wide max-w-xs text-center text-balance font-medium leading-none">
+            Here are some tips on how to improve your score
+          </p>
+          <Button className="w-full bg-[#D5E5FF] text-[#1FA1E0]">Details</Button>
+        </div>
       </CardContent>
-      <CardFooter className="flex-col gap-2 text-sm">
-        <div className="flex items-center gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
-        </div>
-      </CardFooter>
     </Card>
   )
 }

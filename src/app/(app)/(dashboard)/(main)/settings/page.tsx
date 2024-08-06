@@ -63,8 +63,7 @@ const AccountSection = () => {
       <div className="flex items-center">
         <h1 className="text-lg font-semibold md:text-xl">Details</h1>
       </div>
-      <Container className="!p-0 grid gap-2 w-full flex-1">
-        <h1>Details</h1>
+      <Container className="!p-0 !mx-0 !max-w-full grid gap-2 w-full flex-1">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
