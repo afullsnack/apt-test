@@ -6,6 +6,8 @@ import { RadioGroup, RadioGroupItem } from './ui/radio-group'
 import { Label } from './ui/label'
 import { Button } from './ui/button'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { ConfirmSubmitDialog } from './confirm-submit-dialog'
 
 type Args = {
   test: string
@@ -14,6 +16,7 @@ type Args = {
 }
 export const Question = ({ test, section, question }: Args) => {
   const [answer, setAnswer] = useState<string>()
+  const router = useRouter()
 
   return (
     <Section className="grid w-full grid-cols-3 gap-2 px-8">
@@ -53,7 +56,9 @@ export const Question = ({ test, section, question }: Args) => {
         }
         <div className="flex items-center justify-end gap-4 w-full ">
           <Button>Back</Button>
-          <Button onClick={() => {}}>Next</Button>
+          <ConfirmSubmitDialog onConfirm={() => router.push(`/test/${test}/${section}/finish`)}>
+            <Button>Finish</Button>
+          </ConfirmSubmitDialog>
         </div>
       </Container>
     </Section>
