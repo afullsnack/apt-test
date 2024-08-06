@@ -2,7 +2,9 @@ import { TestEntry } from '@app/components/test-entry'
 import { SectionEntry } from '@app/components/test-section-entry'
 import { Main, Section, Container } from '@app/components/craft'
 import { Question } from '@app/components/test-questions'
-import { Button } from '@/app/(app)/components/ui/button'
+import { Button } from '@app/components/ui/button'
+import { FinishTest } from '@app/components/finish'
+import { ConfirmCloseDialog } from '@/app/(app)/components/confirm-close-dialog'
 
 export default async function TestPage({ params }: { params: { slug: string[] } }) {
   console.log(params.slug, ':::from page')
@@ -20,13 +22,19 @@ export default async function TestPage({ params }: { params: { slug: string[] } 
       {test && section && question && (
         <Section className="!p-8 w-full border border-blue-300 flex items-center justify-between">
           <h1>{section}</h1>
-          <span>00:00</span>
-          <div className="flex items-center space-x-2">
-            <span>Question {question} of 50</span>
-            <Button variant="outline" size={'sm'}>
-              Close
-            </Button>
-          </div>
+          {question !== 'finish' && (
+            <>
+              <span>00:00</span>
+              <div className="flex items-center space-x-2">
+                <span>Question {question} of 50</span>
+                <ConfirmCloseDialog>
+                  <Button variant="outline" size={'sm'}>
+                    Close
+                  </Button>
+                </ConfirmCloseDialog>
+              </div>
+            </>
+          )}
         </Section>
       )}
 
@@ -73,9 +81,11 @@ export default async function TestPage({ params }: { params: { slug: string[] } 
       )}
 
       {/* test page entry */}
-      {test && section && question && (
+      {test && section && question && question !== 'finish' && (
         <Question section={section} test={test} question={question} />
       )}
+      {/* Finish test component */}
+      {test && section && question && question === 'finish' && <FinishTest />}
     </Main>
   )
 }
