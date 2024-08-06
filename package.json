@@ -42,7 +42,9 @@
     "sharp": "0.32.6",
     "tailwind-merge": "^2.4.0",
     "tailwindcss-animate": "^1.0.7",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "zsa": "^0.5.1",
+    "zsa-react": "^0.2.2"
   },
   "devDependencies": {
     "@types/node": "^20.12.12",
