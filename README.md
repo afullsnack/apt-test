@@ -54,4 +54,7 @@ If you have any issues or questions, reach out to us on [Discord](https://discor
 
 ## User dashboard
 - [ ] Send access code action
+  - [ ] Number of events on platform
+    - Send code
+    - Account details change/update
 - [ ] Authorize access code
