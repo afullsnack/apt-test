@@ -40,3 +40,18 @@ The easiest way to deploy your project is to use [Payload Cloud](https://payload
 ## Questions
 
 If you have any issues or questions, reach out to us on [Discord](https://discord.com/invite/payload) or start a [GitHub discussion](https://github.com/payloadcms/payload/discussions).
+
+# Project progress
+
+## Admin CMS
+- [ ] Create collections
+  - [ ] Update user collection
+  - [ ] Create test collection
+  - [ ] Create section collection
+  - [ ] Create questions collection
+- [ ] Map the relationship of each collection
+- [ ] Slug handling function
+
+## User dashboard
+- [ ] Send access code action
+- [ ] Authorize access code

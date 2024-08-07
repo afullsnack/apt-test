@@ -48,6 +48,9 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: number;
+  'access-code'?: string | null;
+  'full-name'?: string | null;
+  'is-admin'?: boolean | null;
   updatedAt: string;
   createdAt: string;
   email: string;
