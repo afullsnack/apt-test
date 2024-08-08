@@ -71,7 +71,7 @@ export default function Code() {
               </div>
               <Separator className="my-4" />
               <div className="text-center text-sm">
-                Didn't get a code?{' '}
+                {"Didn't"} get a code?{' '}
                 <Link href="/resend" className="underline text-blue-300">
                   Resend
                 </Link>

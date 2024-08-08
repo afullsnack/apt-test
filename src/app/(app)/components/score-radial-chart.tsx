@@ -37,7 +37,7 @@ export function TestScoreChart() {
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Riz's Score</CardTitle>
+        <CardTitle>{"Riz's"} Score</CardTitle>
         {/* <CardDescription>January - June 2024</CardDescription> */}
       </CardHeader>
       <CardContent className="flex flex-1 flex-col items-center pb-0">
