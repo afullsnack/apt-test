@@ -13,7 +13,9 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
-    question: Question;
+    questions: Question;
+    sections: Section;
+    tests: Test;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
@@ -83,10 +85,58 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "question".
+ * via the `definition` "questions".
  */
 export interface Question {
   id: number;
+  title: string;
+  questionImage?: number | Media | null;
+  options?:
+    | {
+        option?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  section?: (number | null) | Section;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sections".
+ */
+export interface Section {
+  id: number;
+  name: string;
+  quote?: string | null;
+  slug?: string | null;
+  test?: (number | null) | Test;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tests".
+ */
+export interface Test {
+  id: number;
+  name: string;
+  description: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  slug?: string | null;
   updatedAt: string;
   createdAt: string;
 }

@@ -86,13 +86,17 @@ export function TestScoreChart() {
             />
           </RadialBarChart>
         </ChartContainer>
+      </CardContent>
+      <CardFooter className="py-2">
         <div className="flex-col gap-4 flex">
-          <p className="tracking-wide max-w-xs text-center text-balance font-medium leading-none">
+          <p className="tracking-wide max-w-xs text-center text-sm text-balance font-medium leading-none">
             Here are some tips on how to improve your score
           </p>
-          <Button className="w-full bg-[#D5E5FF] text-[#1FA1E0]">Details</Button>
+          <Button className="w-full bg-[#D5E5FF] text-[#1FA1E0]" size={'sm'}>
+            Details
+          </Button>
         </div>
-      </CardContent>
+      </CardFooter>
     </Card>
   )
 }

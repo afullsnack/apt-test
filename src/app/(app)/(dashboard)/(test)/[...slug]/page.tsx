@@ -14,6 +14,7 @@ export default async function TestPage({ params }: { params: { slug: string[] } 
 
   return (
     <Main className="flex flex-1 w-full flex-col gap-4">
+      {/* Header section of test page */}
       {test && section && !question && (
         <Section className="grid gap-2 bg-blue-600/75">
           <div />

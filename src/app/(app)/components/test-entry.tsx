@@ -7,6 +7,7 @@ import { Button } from './ui/button'
 import { RadioGroup, RadioGroupItem } from './ui/radio-group'
 import { Label } from './ui/label'
 import { usePathname, useRouter } from 'next/navigation'
+import { Star } from './star'
 
 export type TestSection = {
   id: string
@@ -37,7 +38,7 @@ export const TestEntry: FC<{
 
           <div className="space-x-2 flex">
             {Array.from({ length: 5 }).map((_, index) => (
-              <div key={index} className="bg-yellow-400 rounded-full p-2" />
+              <Star key={index} className="text-yellow-400" />
             ))}
           </div>
         </div>
