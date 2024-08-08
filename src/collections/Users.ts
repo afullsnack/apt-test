@@ -1,3 +1,4 @@
+import { triggerEvent } from '@/use-cases/trigger-event'
 import type { CollectionConfig } from 'payload'
 
 export const Users: CollectionConfig = {
@@ -44,6 +45,17 @@ export const Users: CollectionConfig = {
   ],
   hooks: {
     // send email to new user email after name or email change
-    afterChange: [async ({ operation, doc }) => {}],
+    afterChange: [
+      async ({ operation, doc }) => {
+        if (operation === 'update') {
+          if (doc?.email !== 'miraclef60@gmail.com') {
+            // TODO: call event trigger to send email
+            await triggerEvent({ email: doc?.email, eventName: 'user-detail-update' })
+          }
+        }
+
+        return doc
+      },
+    ],
   },
 }

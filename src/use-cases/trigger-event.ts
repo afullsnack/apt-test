@@ -5,7 +5,7 @@ export const triggerEvent = async ({
 }: {
   email: string
   eventName: string
-  metadata: Record<string, any>
+  metadata?: Record<string, any>
 }): Promise<any> => {
   try {
     const TRACK_URL = `${process.env.PLUNK_API_URL}/v1/track`
