@@ -1,4 +1,5 @@
 import { Main, Section, Container } from '@/app/(app)/components/craft'
+import { PerformanceChart } from '@app/components/performance-area-chart'
 import { Card, CardTitle, CardHeader, CardContent } from '@/app/(app)/components/ui/card'
 import {
   Table,
@@ -10,10 +11,11 @@ import {
 } from '@/app/(app)/components/ui/table'
 import { TestCard } from '@app/components/ui/test-card'
 import Link from 'next/link'
+import { Button } from '@/app/(app)/components/ui/button'
 
 export default function Overview() {
   return (
-    <Main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+    <Main className="flex flex-1 flex-col gap-8 p-4 lg:gap-6 lg:p-6">
       <Section className="!p-0 grid gap-2">
         <div className="flex items-center">
           <h1 className="text-lg font-semibold md:text-xl">Overview</h1>
@@ -58,8 +60,14 @@ export default function Overview() {
         </Container>
       </Section>
       <Section className="!p-0 grid gap-2">
-        <div className="flex items-center">
+        <Container className="!p-0 !mx-0 !max-w-full col-span-3">
+          <PerformanceChart />
+        </Container>
+      </Section>
+      <Section className="!p-0 grid gap-2">
+        <div className="flex items-center justify-between">
           <h1 className="text-lg font-semibold md:text-xl">Recent activity</h1>
+          <Button>Take Mock Test</Button>
         </div>
         <Container className="!p-0 !mx-0 !max-w-full grid w-full flex-1">
           <Table>
@@ -122,33 +130,33 @@ export default function Overview() {
           </Table>
         </Container>
       </Section>
-      <Section className="!p-0 grid gap-2">
-        <div className="flex items-center">
-          <h1 className="text-lg font-semibold md:text-xl">Take Mock Test</h1>
-        </div>
-        <Container className="!p-0 !mx-0 !max-w-full grid grid-cols-3 gap-2 w-full">
-          <Link href="/test/all-mighty-test" passHref>
-            <TestCard
-              title="All Mighty Test"
-              description="Numerical reasoning tests demonstrate your ability to deal with numbers quickly and accurately. These tests contain questions that..."
-              testCount={50}
-              questionsCount={520}
-            />
-          </Link>
-          <TestCard
-            title="All Mighty Test"
-            description="Numerical reasoning tests demonstrate your ability to deal with numbers quickly and accurately. These tests contain questions that..."
-            testCount={50}
-            questionsCount={520}
-          />
-          <TestCard
-            title="All Mighty Test"
-            description="Numerical reasoning tests demonstrate your ability to deal with numbers quickly and accurately. These tests contain questions that..."
-            testCount={50}
-            questionsCount={520}
-          />
-        </Container>
-      </Section>
+      {/*<Section className="!p-0 grid gap-2">
+      //   <div className="flex items-center">
+      //     <h1 className="text-lg font-semibold md:text-xl">Sample questions</h1>
+      //   </div>
+      //   <Container className="!p-0 !mx-0 !max-w-full grid grid-cols-3 gap-2 w-full">
+      //     <Link href="/test/all-mighty-test" passHref>
+      //       <TestCard
+      //         title="All Mighty Test"
+      //         description="Numerical reasoning tests demonstrate your ability to deal with numbers quickly and accurately. These tests contain questions that..."
+      //         testCount={50}
+      //         questionsCount={520}
+      //       />
+      //     </Link>
+      //     <TestCard
+      //       title="All Mighty Test"
+      //       description="Numerical reasoning tests demonstrate your ability to deal with numbers quickly and accurately. These tests contain questions that..."
+      //       testCount={50}
+      //       questionsCount={520}
+      //     />
+      //     <TestCard
+      //       title="All Mighty Test"
+      //       description="Numerical reasoning tests demonstrate your ability to deal with numbers quickly and accurately. These tests contain questions that..."
+      //       testCount={50}
+      //       questionsCount={520}
+      //     />
+      //   </Container>
+      </Section>/* */}
     </Main>
   )
 }

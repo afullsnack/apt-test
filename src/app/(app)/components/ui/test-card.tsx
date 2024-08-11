@@ -23,15 +23,13 @@ export const TestCard = ({ className, ...props }: Args) => (
       </div>
     </CardContent>
     <CardFooter className="flex w-full items-center justify-between px-4">
-      <span className="font-bold text-sm p-0 text-left">
-        {props.testCount} tests | {props.questionsCount} questions
-      </span>
+      <span className="font-bold text-sm p-0 text-left">| {props.questionsCount} questions</span>
       {/* /// Star rating placeholder */}
-      <div className="space-x-1 flex">
+      {/*<div className="space-x-1 flex">
         {Array.from({ length: 5 }).map((_, index) => (
           <Star key={index} className="text-yellow-400" />
         ))}
-      </div>
+        </div>*/}
     </CardFooter>
   </Card>
 )

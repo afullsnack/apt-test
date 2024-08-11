@@ -22,6 +22,8 @@ export const triggerEvent = async ({
         data: metadata,
       }),
     })
+
+    console.log(response, ':::trigger plunk event endpoint call')
   } catch (err: any) {
     console.log(err, ':::plunk event trigger')
     throw new Error('request could not be completed')
