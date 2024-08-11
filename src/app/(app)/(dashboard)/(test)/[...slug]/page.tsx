@@ -5,6 +5,7 @@ import { Question } from '@app/components/test-questions'
 import { Button } from '@app/components/ui/button'
 import { FinishTest } from '@app/components/finish'
 import { ConfirmCloseDialog } from '@/app/(app)/components/confirm-close-dialog'
+import CountdownTimer from '@/app/(app)/components/countdown-timer'
 
 export default async function TestPage({ params }: { params: { slug: string[] } }) {
   console.log(params.slug, ':::from page')
@@ -25,7 +26,7 @@ export default async function TestPage({ params }: { params: { slug: string[] } 
           <h1 className="text-3xl font-semibold capitalize">{section}</h1>
           {question !== 'finish' && (
             <>
-              <span>00:00</span>
+              <CountdownTimer minutes={1} />
               <div className="flex items-center space-x-2">
                 <span>Question {question} of 50</span>
                 <ConfirmCloseDialog>

@@ -3,6 +3,7 @@ import { TestCard } from '@app/components/ui/test-card'
 import { TestScoreChart } from '@app/components/score-radial-chart'
 import { PerformanceChart } from '@app/components/performance-area-chart'
 import { Button } from '@/app/(app)/components/ui/button'
+import Link from 'next/link'
 
 export default function Test() {
   return (
@@ -10,7 +11,9 @@ export default function Test() {
       <Section className="!p-0 grid gap-2">
         <div className="flex items-center justify-between">
           <h1 className="text-lg font-semibold md:text-xl">Sample questions</h1>
-          <Button>Take Mock Test</Button>
+          <Link href="/test/all-mighty-test" passHref>
+            <Button>Take Mock Test</Button>
+          </Link>
         </div>
         <Container className="!p-0 !mx-0 !max-w-full grid grid-cols-3 gap-2 w-full flex-1">
           {Array.from({ length: 6 }).map((_, i) => (
