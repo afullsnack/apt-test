@@ -43,31 +43,31 @@ export default async function TestPage({ params }: { params: { slug: string[] } 
       {/* test page entry */}
       {test && !section && !question && (
         <TestEntry
-          title="All mighty test"
+          title="Mock Test"
           description="Lorem ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsumipsum"
           sections={[
             {
               id: 'quantitative-reasoning',
               name: 'Quantitative Reasoning',
-              questionCount: 50,
+              questionCount: 30,
             },
             {
               id: 'verbal-reasoning',
               name: 'Verbal Reasoning',
-              questionCount: 50,
+              questionCount: 30,
             },
             {
               id: 'english',
               name: 'English',
-              questionCount: 50,
+              questionCount: 30,
             },
             {
               id: 'logic',
               name: 'Logic',
-              questionCount: 50,
+              questionCount: 30,
             },
           ]}
-          totalQuestionCount={300}
+          totalQuestionCount={120}
           attempts={2}
         />
       )}
@@ -77,7 +77,7 @@ export default async function TestPage({ params }: { params: { slug: string[] } 
           section={{
             id: 'quantitative-reasoning',
             name: 'Quantitative Reasoning',
-            questionCount: 50,
+            questionCount: 30,
           }}
         />
       )}

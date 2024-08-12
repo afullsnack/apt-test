@@ -13,8 +13,7 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
-    questions: Question;
-    sections: Section;
+    metrics: Metric;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
@@ -84,60 +83,16 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "questions".
+ * via the `definition` "metrics".
  */
-export interface Question {
+export interface Metric {
   id: number;
-  title: string;
-  questionImage?: number | Media | null;
-  options?:
-    | {
-        option?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  section?: (number | null) | Section;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sections".
- */
-export interface Section {
-  id: number;
-  name: string;
-  quote?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  description: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  slug?: string | null;
+  'section-slug'?: string | null;
+  attempts?: number | null;
+  score?: number | null;
+  'fail-count'?: number | null;
+  'passed-count'?: number | null;
+  user?: (number | null) | User;
   updatedAt: string;
   createdAt: string;
 }

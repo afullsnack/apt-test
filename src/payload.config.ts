@@ -8,9 +8,6 @@ import sharp from 'sharp'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
-import { Questions } from './collections/Questions'
-import { Sections } from './collections/Sections'
-import { Tests } from './collections/Tests'
 import { Metrics } from './collections/Metrics'
 
 const filename = fileURLToPath(import.meta.url)
@@ -20,7 +17,7 @@ export default buildConfig({
   admin: {
     user: Users.slug,
   },
-  collections: [Users, Media, Questions, Sections, Metrics],
+  collections: [Users, Media, Metrics],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

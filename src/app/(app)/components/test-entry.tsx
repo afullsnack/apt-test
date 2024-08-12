@@ -21,7 +21,7 @@ export const TestEntry: FC<{
   totalQuestionCount: number
   attempts: number
 }> = ({ title, description, sections, totalQuestionCount, attempts }) => {
-  const [display, setDisplay] = useState<'entry' | 'sections'>('entry')
+  const [display, setDisplay] = useState<'entry' | 'sections'>('sections')
   const [section, setSection] = useState<string>()
   const { push } = useRouter()
   const pathname = usePathname()
@@ -36,11 +36,11 @@ export const TestEntry: FC<{
             {sections.length} Section | {totalQuestionCount} Questions
           </span>
 
-          <div className="space-x-2 flex">
+          {/*<div className="space-x-2 flex">
             {Array.from({ length: 5 }).map((_, index) => (
               <Star key={index} className="text-yellow-400" />
             ))}
-          </div>
+          </div>*/}
         </div>
         {display === 'entry' && (
           <>

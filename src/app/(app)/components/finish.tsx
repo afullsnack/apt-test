@@ -21,9 +21,11 @@ export const FinishTest = () => {
         </div>
         <p>
           You’re on your way. but we suggest you keep practicing. Our dashboard analytic allows you
-          to keep track of your scores and compare against your peers
+          to keep track of your scores.
         </p>
-        <Button>Take Another Test</Button>
+        <Link href={'/test/mock-test'} passHref className="w-full grid">
+          <Button>Take Another Test</Button>
+        </Link>
 
         <div className="flex w-full items-end justify-between">
           <Link className="underline text-xs" href={'/solution/'}>

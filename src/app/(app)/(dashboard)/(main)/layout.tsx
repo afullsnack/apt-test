@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Inter } from 'next/font/google'
 import { Layout } from '@/app/(app)/components/craft'
 import { Button } from '@/app/(app)/components/ui/button'
@@ -31,9 +31,30 @@ type Args = {
   children: React.ReactNode
 }
 
+function getGreeting() {
+  const hour = new Date().getHours()
+
+  if (hour >= 5 && hour < 12) {
+    return 'good morning'
+  } else if (hour >= 12 && hour < 18) {
+    return 'good afternoon'
+  } else if (hour >= 18 && hour < 22) {
+    return 'good evening'
+  } else {
+    return 'Good day'
+  }
+}
+
 const DashboardLayout = ({ children }: Args) => {
   const pathname = usePathname()
   const router = useRouter()
+
+  const [greeting, setGreeting] = useState(getGreeting())
+
+  useEffect(() => {
+    const timer = setInterval(() => setGreeting(getGreeting()), 60000)
+    return () => clearInterval(timer)
+  }, [])
 
   return (
     <Layout className={cn(inter.className, 'h-screen')}>
@@ -217,9 +238,7 @@ const DashboardLayout = ({ children }: Args) => {
               <div className="w-full flex-1 flex flex-col">
                 {!pathname.includes('settings') && (
                   <>
-                    <h1 className="text-balance text-lg font-semibold">
-                      Hi {'Jake'}, Good Afternoon
-                    </h1>
+                    <h1 className="text-balance text-lg font-semibold">Hi, {greeting}</h1>
                     <span className="text-balance text-sx font-normal">
                       Lets learn something new today
                     </span>

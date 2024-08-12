@@ -6,8 +6,7 @@ export const Metrics: CollectionConfig = {
     {
       name: 'section-slug',
       label: 'Section',
-      type: 'relationship',
-      relationTo: 'sections',
+      type: 'text',
     },
     {
       name: 'attempts',

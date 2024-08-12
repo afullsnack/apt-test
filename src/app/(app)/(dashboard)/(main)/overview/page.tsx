@@ -59,15 +59,17 @@ export default function Overview() {
           </Card>
         </Container>
       </Section>
-      <Section className="!p-0 grid gap-2">
+      {/*<Section className="!p-0 grid gap-2">
         <Container className="!p-0 !mx-0 !max-w-full col-span-3">
           <PerformanceChart />
         </Container>
-      </Section>
+      </Section>*/}
       <Section className="!p-0 grid gap-2">
         <div className="flex items-center justify-between">
           <h1 className="text-lg font-semibold md:text-xl">Recent activity</h1>
-          <Button>Take Mock Test</Button>
+          <Link href={'/test/mock-test'} passHref>
+            <Button>Take Mock Test</Button>
+          </Link>
         </div>
         <Container className="!p-0 !mx-0 !max-w-full grid w-full flex-1">
           <Table>
@@ -117,7 +119,7 @@ export default function Overview() {
                 <TableCell className="">32%</TableCell>
                 <TableCell className="text-right">2023-06-23</TableCell>
               </TableRow>
-              <TableRow>
+              {/*<TableRow>
                 <TableCell>
                   <div className="font-medium">Verbal Reasoning test</div>
                 </TableCell>
@@ -125,7 +127,7 @@ export default function Overview() {
                 <TableCell className="">43%</TableCell>
                 <TableCell className="">32%</TableCell>
                 <TableCell className="text-right">2023-06-23</TableCell>
-              </TableRow>
+              </TableRow>*/}
             </TableBody>
           </Table>
         </Container>
