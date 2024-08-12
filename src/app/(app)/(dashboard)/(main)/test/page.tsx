@@ -24,7 +24,7 @@ export default async function Test() {
           <Link href={'https://nukleus-gg.gitbook.io/aptitude-test-docs'} passHref>
             <TestCard
               title="Quantitative Reasoning/Mathematics"
-              description="Short description of the section"
+              description="Quantitative reasoning is the ability to interpret, analyze, and draw conclusions from numerical data and mathematical relationships. It involves applying mathematical concepts and logical thinking to solve real-world problems and make informed decisions based on quantitative information."
               testCount={50}
               questionsCount={30}
             />
@@ -37,7 +37,7 @@ export default async function Test() {
           >
             <TestCard
               title="Verbal Reasoning/English"
-              description="Short description of the section"
+              description="Verbal reasoning is the ability to understand, analyze, and evaluate written or spoken language. It involves comprehending complex text, drawing logical inferences, recognizing relationships between ideas, and constructing well-structured arguments based on given information."
               testCount={50}
               questionsCount={30}
             />
@@ -50,7 +50,7 @@ export default async function Test() {
           >
             <TestCard
               title="General Knowledge (Physics, Chemistry, ICT)"
-              description="Short description of the section"
+              description="General Knowledge in Physics, Chemistry, and ICT refers to a broad understanding of fundamental concepts, principles, and recent developments in these fields"
               testCount={50}
               questionsCount={30}
             />
