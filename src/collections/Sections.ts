@@ -17,12 +17,19 @@ export const Sections: CollectionConfig = {
     {
       name: 'quote',
       label: 'Section quote',
-      type: 'text',
+      type: 'richText',
+    },
+    {
+      name: 'description',
+      label: 'Description',
+      type: 'richText',
+      required: true,
     },
     {
       name: 'slug',
       label: 'Slug',
       type: 'text',
+      index: true,
       admin: {
         position: 'sidebar',
       },
@@ -30,11 +37,11 @@ export const Sections: CollectionConfig = {
         beforeValidate: [formatSlug('name')],
       },
     },
-    {
-      name: 'test',
-      label: 'Test',
-      type: 'relationship',
-      relationTo: 'tests',
-    },
+    // {
+    //   name: 'test',
+    //   label: 'Test',
+    //   type: 'relationship',
+    //   relationTo: 'tests',
+    // },
   ],
 }

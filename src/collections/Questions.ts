@@ -4,9 +4,16 @@ export const Questions: CollectionConfig = {
   slug: 'questions',
   fields: [
     {
-      name: 'title',
-      label: 'Title',
-      type: 'text',
+      name: 'serial-number',
+      label: 'S/N',
+      type: 'number',
+      index: true,
+      required: true,
+    },
+    {
+      name: 'question',
+      label: 'question',
+      type: 'richText',
       required: true,
     },
     {
@@ -25,6 +32,17 @@ export const Questions: CollectionConfig = {
           type: 'text',
         },
       ],
+    },
+    {
+      name: 'solution',
+      label: 'Solution',
+      type: 'text',
+      required: true,
+    },
+    {
+      name: 'explanation',
+      label: 'Explanation',
+      type: 'richText',
     },
     {
       name: 'section',
