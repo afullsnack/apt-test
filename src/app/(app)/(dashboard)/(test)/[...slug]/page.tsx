@@ -7,8 +7,11 @@ import { FinishTest } from '@app/components/finish'
 import { ConfirmCloseDialog } from '@/app/(app)/components/confirm-close-dialog'
 import CountdownTimer from '@/app/(app)/components/countdown-timer'
 import { Airtable, NoBaseIdError } from '@/airtable.config'
+import React from 'react'
 
 export default async function TestPage({ params }: { params: { slug: string[] } }) {
+  // Making all the info into the boundaries of the
+
   console.log(params.slug, ':::from page')
   const [test, section, question, ...props] = params.slug.slice(1)
   let sections: Array<any>
@@ -96,5 +99,18 @@ export default async function TestPage({ params }: { params: { slug: string[] } 
       {/* Finish test component */}
       {test && section && question && question === 'finish' && <FinishTest />}
     </Main>
+  )
+}
+
+// Component to view and display questions
+const QuestionComponent: React.FC<{ recordId: string }> = ({ recordId }) => {
+  console.log(recordId, ':::milky improving milky')
+
+  return (
+    <Container>
+      <div>
+        <h1>Assignment</h1>
+      </div>
+    </Container>
   )
 }
