@@ -18,6 +18,8 @@ export const Question = ({ test, section, question }: Args) => {
   const [answer, setAnswer] = useState<string>()
   const router = useRouter()
 
+  console.log(question, ':::Question id')
+
   return (
     <Section className="grid w-full grid-cols-3 gap-2 px-8">
       <Container className="col-span-2 bg-background w-full border border-border dark:bg-foreground flex flex-col p-8 items-center justify-center">
