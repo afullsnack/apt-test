@@ -10,17 +10,19 @@ import { Airtable, NoBaseIdError } from '@/airtable.config'
 import React from 'react'
 
 export default async function TestPage({ params }: { params: { slug: string[] } }) {
-  // Making all the info into the boundaries of the
-
   console.log(params.slug, ':::from page')
   const [test, section, question, ...props] = params.slug.slice(1)
   let sections: Array<any>
+  let records: Array<any>
 
   console.log(test, section, question, ':::test taker')
   // TODO: call airtable read to fetch all tables from base
   const a = new Airtable({ token: process.env.AIRTABLE_API_KEY_TEST! })
+
+  // try getting all tables
   try {
     const base = await a.base()
+
     console.log(base, ':::single base data')
     sections = base['tables']?.map((table: any) => ({
       id: table?.id,
@@ -37,7 +39,23 @@ export default async function TestPage({ params }: { params: { slug: string[] } 
         questionCount: 30,
       }))
     } else {
+      // Throw for all other errors
       throw e
+    }
+  }
+
+  console.log(section, ':::section')
+  if (section) {
+    try {
+      // pass in section as tableId
+      const records = await a.listTableRecords(section)
+      console.log(records, '::::table records')
+    } catch (e: unknown) {
+      if (e instanceof NoBaseIdError) {
+        // retry with baseId
+        const records = await a.listTableRecords(section, 'apptppBpE0rStopjr')
+        console.log(records, '::::retry table records')
+      }
     }
   }
 

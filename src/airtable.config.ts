@@ -30,6 +30,7 @@ class Airtable {
   //> Views with view model
   async base(baseId?: string) {
     const BASE_ID = baseId ?? this.baseId
+    this.baseId = BASE_ID
     if (BASE_ID) {
       const response = await fetch(`${this.baseUrl}/bases/${BASE_ID}/tables`, {
         method: 'GET',
@@ -53,8 +54,8 @@ class Airtable {
   // > pageSize: 100 - default
   // > offset: if more records after {pageSize} response will contain {offset}
   // > records: [object of row]
-  async listTableRecords(tableId: string) {
-    const BASE_ID = this.baseId
+  async listTableRecords(tableId: string, baseId?: string) {
+    const BASE_ID = this.baseId ?? baseId
     if (BASE_ID) {
       const response = await fetch(`${this.baseUrl}/${BASE_ID}/${tableId}`, {
         method: 'GET',
