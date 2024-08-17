@@ -13,7 +13,7 @@ type AirtableConfig = {
 class Airtable {
   private token: string
   private baseId?: string
-  private baseUrl: string = 'https://api.airtable.com/v0/meta'
+  private baseUrl: string = 'https://api.airtable.com/v0'
   constructor({ token, baseId }: AirtableConfig) {
     // TODO: return object with config options
     this.token = token
@@ -32,7 +32,7 @@ class Airtable {
     const BASE_ID = baseId ?? this.baseId
     this.baseId = BASE_ID
     if (BASE_ID) {
-      const response = await fetch(`${this.baseUrl}/bases/${BASE_ID}/tables`, {
+      const response = await fetch(`${this.baseUrl}/meta/bases/${BASE_ID}/tables`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${this.token}`,
@@ -43,10 +43,13 @@ class Airtable {
         const json = await response.json()
         console.log(json, ':::getting specific base schema')
         return json
+      } else {
+        console.log(response.status, response.statusText, ':::error fetching base')
+        throw new Error(response.statusText)
       }
+    } else {
+      throw new NoBaseIdError('No base ID was found for this Airtable instance')
     }
-
-    throw new NoBaseIdError('No base ID was found for this Airtable instance')
   }
 
   // Get records for specific table
@@ -57,7 +60,7 @@ class Airtable {
   async listTableRecords(tableId: string, baseId?: string) {
     const BASE_ID = this.baseId ?? baseId
     if (BASE_ID) {
-      const response = await fetch(`${this.baseUrl}/${BASE_ID}/${tableId}`, {
+      const response = await fetch(`${this.baseUrl}/${BASE_ID}/${tableId}?maxRecords=30`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${this.token}`,
@@ -69,6 +72,7 @@ class Airtable {
         console.log(json, ':::list table records')
         return json
       } else {
+        console.log(response.status, response.statusText, ':::Error in network call')
         throw new Error('Something went wrong with the request')
       }
     }
