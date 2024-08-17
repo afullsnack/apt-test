@@ -1,5 +1,7 @@
 'use client'
 
+import { ConfirmCloseDialog } from '@/app/(app)/components/confirm-close-dialog'
+import CountdownTimer from '@/app/(app)/components/countdown-timer'
 import { Section, Container } from '@app/components/craft'
 import { CircleAlert } from 'lucide-react'
 import { RadioGroup, RadioGroupItem } from './ui/radio-group'
@@ -20,10 +22,11 @@ import {
 type Args = {
   test: string
   section: string
+  sectionName: string
   question: string | number
   records: Record<string, any>[]
 }
-export const Question = ({ test, section, question, records }: Args) => {
+export const Question = ({ test, section, sectionName, question, records }: Args) => {
   const [answer, setAnswer] = useState<string>()
   const router = useRouter()
   const [api, setApi] = useState<CarouselApi>()
@@ -47,10 +50,32 @@ export const Question = ({ test, section, question, records }: Args) => {
 
   return (
     <Section className="max-w-screen px-8">
+      <Section className="!p-8 w-full border border-blue-300 flex items-center justify-between">
+        <h1 className="text-3xl font-semibold capitalize">{sectionName}</h1>
+        {question !== 'finish' && (
+          <>
+            <CountdownTimer minutes={1} />
+            <div className="flex items-center space-x-2">
+              <span>
+                {/* @ts-ignore */}
+                Question {current} of {records?.length}
+              </span>
+              <ConfirmCloseDialog>
+                <Button variant="outline" size={'sm'}>
+                  Close
+                </Button>
+              </ConfirmCloseDialog>
+            </div>
+          </>
+        )}
+      </Section>
       <Carousel
         opts={{
           align: 'center',
           loop: false,
+          dragThreshold: 0,
+          dragFree: false,
+          watchDrag: false,
         }}
         setApi={setApi}
         className="w-full"
@@ -60,7 +85,7 @@ export const Question = ({ test, section, question, records }: Args) => {
             <CarouselItem key={index ?? q?.id} className="grid-cols-3 gap-2 grid">
               <Container className="bg-background w-full border col-span-2 border-border dark:bg-foreground flex flex-col p-8 items-center justify-center">
                 <div>
-                  <p>{q?.fields['Questions']}</p>
+                  <p className="text-xl">{q?.fields['Questions']}</p>
                 </div>
               </Container>
 
@@ -79,6 +104,7 @@ export const Question = ({ test, section, question, records }: Args) => {
                     >
                       {Object.entries(q.fields)
                         .filter(([field, _]) => field.toLowerCase().includes('option'))
+                        .sort(([aField, aValue], [bField, bValue]) => aField.localeCompare(bField))
                         .map(([field, value], index) => (
                           <div
                             key={index}
@@ -97,8 +123,30 @@ export const Question = ({ test, section, question, records }: Args) => {
                   </>
                 }
                 <div className="flex items-center justify-center gap-4 w-full ">
-                  {api?.canScrollPrev() && <Button onClick={() => api.scrollPrev()}>Back</Button>}
-                  {api?.canScrollNext() && <Button onClick={() => api.scrollNext()}>Next</Button>}
+                  {api?.canScrollPrev() && (
+                    <Button
+                      onClick={() => {
+                        if (answer) {
+                          api.scrollPrev()
+                        }
+                      }}
+                    >
+                      Back
+                    </Button>
+                  )}
+                  {api?.canScrollNext() && (
+                    <Button
+                      onClick={() => {
+                        if (answer) {
+                          api.scrollNext()
+                        } else {
+                          alert('Pick an option to continue')
+                        }
+                      }}
+                    >
+                      Next
+                    </Button>
+                  )}
                   {!api?.canScrollNext() && (
                     <ConfirmSubmitDialog
                       onConfirm={() => router.push(`/test/${test}/${section}/finish`)}

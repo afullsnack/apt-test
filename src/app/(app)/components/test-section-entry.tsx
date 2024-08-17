@@ -42,8 +42,8 @@ export const SectionEntry = ({ section }: Args) => {
         </div>
         <Button
           onClick={() => {
-            router.prefetch(`${pathname}/start`)
-            router.push(`${pathname}/start`)
+            router.prefetch(`${pathname}/1`)
+            router.push(`${pathname}/1`)
           }}
         >
           Start test

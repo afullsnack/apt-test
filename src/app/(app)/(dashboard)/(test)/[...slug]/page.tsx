@@ -4,8 +4,7 @@ import { Main, Section, Container } from '@app/components/craft'
 import { Question } from '@app/components/test-questions'
 import { Button } from '@app/components/ui/button'
 import { FinishTest } from '@app/components/finish'
-import { ConfirmCloseDialog } from '@/app/(app)/components/confirm-close-dialog'
-import CountdownTimer from '@/app/(app)/components/countdown-timer'
+
 import { Airtable, NoBaseIdError } from '@/airtable.config'
 import React from 'react'
 
@@ -13,15 +12,15 @@ export default async function TestPage({ params }: { params: { slug: string[] } 
   console.log(params.slug, ':::from page')
   const [test, section, question, ...props] = params.slug.slice(1)
   let sections: Array<any>
-  let records: Array<any>
+  let records: Record<string, any>[]
 
   console.log(test, section, question, ':::test taker')
   // TODO: call airtable read to fetch all tables from base
-  const a = new Airtable({ token: process.env.AIRTABLE_API_KEY_TEST! })
+  const a = new Airtable({ token: process.env.AIRTABLE_API_KEY_TEST!, baseId: 'apptppBpE0rStopjr' })
 
   // try getting all tables
   try {
-    const base = await a.base()
+    const base = await a.base('apptppBpE0rStopjr')
 
     console.log(base, ':::single base data')
     sections = base['tables']?.map((table: any) => ({
@@ -44,17 +43,23 @@ export default async function TestPage({ params }: { params: { slug: string[] } 
     }
   }
 
-  console.log(section, ':::section')
+  console.log(section, params, ':::section')
   if (section) {
+    console.log('<<<<<<Inside get all records>>>>>>>>>')
     try {
       // pass in section as tableId
-      const records = await a.listTableRecords(section)
-      console.log(records, '::::table records')
+      const table = await a.listTableRecords(section, 'apptppBpE0rStopjr')
+      console.log(table, '::::table records', table?.records?.length)
+      records = table?.records
     } catch (e: unknown) {
       if (e instanceof NoBaseIdError) {
         // retry with baseId
-        const records = await a.listTableRecords(section, 'apptppBpE0rStopjr')
-        console.log(records, '::::retry table records')
+        const table = await a.listTableRecords(section, 'apptppBpE0rStopjr')
+        records = table?.records
+        console.log(table, '::::retry table records', table?.records?.length)
+      } else {
+        console.log(e, ':::error when fetching records')
+        throw e
       }
     }
   }
@@ -65,24 +70,6 @@ export default async function TestPage({ params }: { params: { slug: string[] } 
       {test && section && !question && (
         <Section className="grid gap-2 bg-blue-600/75">
           <div />
-        </Section>
-      )}
-      {test && section && question && (
-        <Section className="!p-8 w-full border border-blue-300 flex items-center justify-between">
-          <h1 className="text-3xl font-semibold capitalize">{section}</h1>
-          {question !== 'finish' && (
-            <>
-              <CountdownTimer minutes={1} />
-              <div className="flex items-center space-x-2">
-                <span>Question {question} of 50</span>
-                <ConfirmCloseDialog>
-                  <Button variant="outline" size={'sm'}>
-                    Close
-                  </Button>
-                </ConfirmCloseDialog>
-              </div>
-            </>
-          )}
         </Section>
       )}
 
@@ -112,23 +99,17 @@ export default async function TestPage({ params }: { params: { slug: string[] } 
       {/* test page entry */}
       {/* Randomize tests presented to user */}
       {test && section && question && question !== 'finish' && (
-        <Question section={section} test={test} question={question} />
+        <Question
+          section={section}
+          sectionName={sections?.find((value) => value?.id === section)?.name}
+          test={test}
+          question={question}
+          // @ts-ignore
+          records={records}
+        />
       )}
       {/* Finish test component */}
       {test && section && question && question === 'finish' && <FinishTest />}
     </Main>
-  )
-}
-
-// Component to view and display questions
-const QuestionComponent: React.FC<{ recordId: string }> = ({ recordId }) => {
-  console.log(recordId, ':::milky improving milky')
-
-  return (
-    <Container>
-      <div>
-        <h1>Assignment</h1>
-      </div>
-    </Container>
   )
 }
