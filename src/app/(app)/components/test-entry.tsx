@@ -33,7 +33,8 @@ export const TestEntry: FC<{
         <Separator className="bg-[#1FA1E0] my-1" />
         <div className="flex justify-center gap-6 w-full px-8 items-center">
           <span className="text-sm font-normal">
-            {sections.length} Section | {totalQuestionCount} Questions
+            <b>{sections.length}</b> Section(s) | <b>{totalQuestionCount}</b> Questions | <b>120</b>{' '}
+            Minutes
           </span>
 
           {/*<div className="space-x-2 flex">
@@ -50,24 +51,24 @@ export const TestEntry: FC<{
           </>
         )}
         {display === 'sections' && (
-          <>
-            <RadioGroup
+          <Container className="gap-4 grid">
+            {/*<RadioGroup
               defaultValue={section}
               onValueChange={(value) => setSection(value)}
               className="bg-muted-foreground/15 p-4 rounded-sm"
-            >
-              {sections.map((section) => (
-                <div key={section.id} className="flex items-center justify-between gap-4">
-                  <div className="items-center justify-start space-x-1">
-                    <RadioGroupItem value={section.id.toString()} id={section.id.toString()} />
-                    <Label htmlFor={section.id.toString()} className="text-left">
-                      {section.name}
-                    </Label>
-                  </div>
-                  <span className="text-xs font-bold">{section.questionCount} questions</span>
+            >*/}
+            {sections.map((section) => (
+              <div key={section.id} className="flex items-center justify-between gap-4">
+                <div className="items-center justify-start space-x-1">
+                  {/*<RadioGroupItem value={section.id.toString()} id={section.id.toString()} />*/}
+                  <Label htmlFor={section.id.toString()} className="text-left">
+                    {section.name}
+                  </Label>
                 </div>
-              ))}
-            </RadioGroup>
+                <span className="text-xs font-bold">{section.questionCount} questions</span>
+              </div>
+            ))}
+            {/*</RadioGroup>*/}
             <Button
               onClick={() => {
                 if (!section) {
@@ -80,7 +81,7 @@ export const TestEntry: FC<{
             >
               Start test
             </Button>
-          </>
+          </Container>
         )}
         <div className="flex items-center w-full justify-end">
           {/* Toggle, and show previous score from previous attempt */}

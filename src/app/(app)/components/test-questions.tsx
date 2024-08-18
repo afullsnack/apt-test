@@ -18,6 +18,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@app/components/ui/carousel'
+import { useQueryState, parseAsInteger } from 'nuqs'
 
 type Args = {
   test: string
@@ -25,12 +26,13 @@ type Args = {
   sectionName: string
   question: string | number
   records: Record<string, any>[]
+  attemptId: string
 }
-export const Question = ({ test, section, sectionName, question, records }: Args) => {
-  const [answer, setAnswer] = useState<string>()
+export const Question = ({ test, section, sectionName, question, records, attemptId }: Args) => {
+  const [answers, setAnswers] = useState<string[]>(new Array<string>(30))
   const router = useRouter()
   const [api, setApi] = useState<CarouselApi>()
-  const [current, setCurrent] = useState(0)
+  const [current, setCurrent] = useQueryState('current', parseAsInteger.withDefault(0))
   const [count, setCount] = useState(0)
 
   useEffect(() => {
@@ -45,8 +47,6 @@ export const Question = ({ test, section, sectionName, question, records }: Args
       setCurrent(api.selectedScrollSnap() + 1)
     })
   }, [api])
-
-  console.log(records[0]?.fields, ':::Question id')
 
   return (
     <Section className="max-w-screen px-8">
@@ -92,14 +92,19 @@ export const Question = ({ test, section, sectionName, question, records }: Args
               <Container className="!p-3 flex flex-col w-full space-y-4 border border-border">
                 <div className="bg-[#F1F2F4] flex items-center space-x-2 w-full p-2 rounded-lg">
                   <CircleAlert className="w-4 h-4" />
-                  <span>Select one option</span>
+                  <span className="text-sm">Select one option</span>
                 </div>
 
                 {
                   <>
                     <RadioGroup
-                      defaultValue={answer}
-                      onValueChange={(value) => setAnswer(value)}
+                      defaultValue={answers[current - 1]}
+                      onValueChange={(value) =>
+                        setAnswers((_prev) => {
+                          _prev[current - 1] = value
+                          return _prev
+                        })
+                      }
                       className="p-4 rounded-sm"
                     >
                       {Object.entries(q.fields)
@@ -126,9 +131,10 @@ export const Question = ({ test, section, sectionName, question, records }: Args
                   {api?.canScrollPrev() && (
                     <Button
                       onClick={() => {
-                        if (answer) {
-                          api.scrollPrev()
-                        }
+                        setCurrent(current! - 1)
+                        api.scrollPrev()
+                        // if (typeof answers[current] !== 'undefined') {
+                        // }
                       }}
                     >
                       Back
@@ -137,7 +143,8 @@ export const Question = ({ test, section, sectionName, question, records }: Args
                   {api?.canScrollNext() && (
                     <Button
                       onClick={() => {
-                        if (answer) {
+                        if (typeof answers[current - 1] !== 'undefined') {
+                          setCurrent(api.selectedScrollSnap() + 1)
                           api.scrollNext()
                         } else {
                           alert('Pick an option to continue')
@@ -149,7 +156,20 @@ export const Question = ({ test, section, sectionName, question, records }: Args
                   )}
                   {!api?.canScrollNext() && (
                     <ConfirmSubmitDialog
-                      onConfirm={() => router.push(`/test/${test}/${section}/finish`)}
+                      onConfirm={() => {
+                        // TODO: call payload to store attempt to DB
+                        if (typeof answers[current - 1] !== 'undefined') {
+                          // TODO: store answers array to localStorage for solution
+                          if (typeof window !== 'undefined') {
+                            localStorage.setItem('answers', JSON.stringify(answers))
+                          }
+
+                          router.push(`/test/${test}/${section}/finish`)
+                        } else {
+                          alert('Pick an option to continue')
+                          // setCurrent(api.selectedScrollSnap() + 1)
+                        }
+                      }}
                     >
                       <Button>Finish</Button>
                     </ConfirmSubmitDialog>
