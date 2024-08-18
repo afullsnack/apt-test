@@ -12,60 +12,62 @@ import { Solutions } from '@/app/(app)/components/test-solutions'
 
 export default async function TestPage({ params }: { params: { slug: string[] } }) {
   const [page, test, attemptId, ...props] = params.slug
-  let sections: Array<any>
+  let sections: Array<any> = []
   let records: Record<string, any>[] = []
   // TODO: call airtable read to fetch all tables from base
   const a = new Airtable({ token: process.env.AIRTABLE_API_KEY_TEST!, baseId: 'apptppBpE0rStopjr' })
 
-  // try getting all tables
-  try {
-    const base = await a.base('apptppBpE0rStopjr')
-
-    console.log(base, ':::single base data')
-    sections = base['tables']?.map((table: any) => ({
-      id: table?.id,
-      name: table?.name,
-      questionCount: 30,
-    }))
-  } catch (e: unknown) {
-    if (e instanceof NoBaseIdError) {
+  if (page === 'test') {
+    // try getting all tables
+    try {
       const base = await a.base('apptppBpE0rStopjr')
-      console.log(base, ':::single base data retry')
+
+      console.log(base, ':::single base data')
       sections = base['tables']?.map((table: any) => ({
         id: table?.id,
         name: table?.name,
         questionCount: 30,
       }))
-    } else {
-      // Throw for all other errors
-      throw e
-    }
-  }
-
-  if (sections.length) {
-    try {
-      // pass in section as tableId
-      for (const section of sections) {
-        const table = await a.listTableRecords(section?.id, 'apptppBpE0rStopjr')
-        // @ts-ignore
-        records = [...records, ...table?.records]
-      }
-
-      // @ts-ignore
-      console.log(records.length, ':::length of records')
     } catch (e: unknown) {
       if (e instanceof NoBaseIdError) {
-        // retry with baseId
+        const base = await a.base('apptppBpE0rStopjr')
+        console.log(base, ':::single base data retry')
+        sections = base['tables']?.map((table: any) => ({
+          id: table?.id,
+          name: table?.name,
+          questionCount: 30,
+        }))
+      } else {
+        // Throw for all other errors
+        throw e
+      }
+    }
+
+    if (sections.length) {
+      try {
+        // pass in section as tableId
         for (const section of sections) {
           const table = await a.listTableRecords(section?.id, 'apptppBpE0rStopjr')
           // @ts-ignore
           records = [...records, ...table?.records]
         }
+
         // @ts-ignore
-        console.log(records.length, ':::record legnth')
-      } else {
-        console.log(e, ':::error when fetching records')
-        throw e
+        console.log(records.length, ':::length of records')
+      } catch (e: unknown) {
+        if (e instanceof NoBaseIdError) {
+          // retry with baseId
+          for (const section of sections) {
+            const table = await a.listTableRecords(section?.id, 'apptppBpE0rStopjr')
+            // @ts-ignore
+            records = [...records, ...table?.records]
+          }
+          // @ts-ignore
+          console.log(records.length, ':::record legnth')
+        } else {
+          console.log(e, ':::error when fetching records')
+          throw e
+        }
       }
     }
   }
