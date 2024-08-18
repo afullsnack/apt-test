@@ -4,17 +4,16 @@ import { Main, Section, Container } from '@app/components/craft'
 import { Question } from '@app/components/test-questions'
 import { Button } from '@app/components/ui/button'
 import { FinishTest } from '@app/components/finish'
+import crypto from 'node:crypto'
 
 import { Airtable, NoBaseIdError } from '@/airtable.config'
 import React from 'react'
+import { Solutions } from '@/app/(app)/components/test-solutions'
 
 export default async function TestPage({ params }: { params: { slug: string[] } }) {
-  console.log(params.slug, ':::from page')
-  const [test, section, question, ...props] = params.slug.slice(1)
+  const [page, test, attemptId, ...props] = params.slug
   let sections: Array<any>
-  let records: Record<string, any>[]
-
-  console.log(test, section, question, ':::test taker')
+  let records: Record<string, any>[] = []
   // TODO: call airtable read to fetch all tables from base
   const a = new Airtable({ token: process.env.AIRTABLE_API_KEY_TEST!, baseId: 'apptppBpE0rStopjr' })
 
@@ -43,20 +42,27 @@ export default async function TestPage({ params }: { params: { slug: string[] } 
     }
   }
 
-  console.log(section, params, ':::section')
-  if (section) {
-    console.log('<<<<<<Inside get all records>>>>>>>>>')
+  if (sections.length) {
     try {
       // pass in section as tableId
-      const table = await a.listTableRecords(section, 'apptppBpE0rStopjr')
-      console.log(table, '::::table records', table?.records?.length)
-      records = table?.records
+      for (const section of sections) {
+        const table = await a.listTableRecords(section?.id, 'apptppBpE0rStopjr')
+        // @ts-ignore
+        records = [...records, ...table?.records]
+      }
+
+      // @ts-ignore
+      console.log(records.length, ':::length of records')
     } catch (e: unknown) {
       if (e instanceof NoBaseIdError) {
         // retry with baseId
-        const table = await a.listTableRecords(section, 'apptppBpE0rStopjr')
-        records = table?.records
-        console.log(table, '::::retry table records', table?.records?.length)
+        for (const section of sections) {
+          const table = await a.listTableRecords(section?.id, 'apptppBpE0rStopjr')
+          // @ts-ignore
+          records = [...records, ...table?.records]
+        }
+        // @ts-ignore
+        console.log(records.length, ':::record legnth')
       } else {
         console.log(e, ':::error when fetching records')
         throw e
@@ -64,27 +70,45 @@ export default async function TestPage({ params }: { params: { slug: string[] } 
     }
   }
 
+  if (page === 'solution') {
+    return (
+      <Main className="flex flex-1 w-full flex-col gap-4">
+        {/* Finish test component */}
+        {page === 'solution' && test && attemptId && (
+          <Solutions
+            test={test}
+            sections={sections}
+            // @ts-ignore
+            records={records}
+            attemptId={attemptId}
+          />
+        )}
+      </Main>
+    )
+  }
+
   return (
     <Main className="flex flex-1 w-full flex-col gap-4">
       {/* Header section of test page */}
-      {test && section && !question && (
+      {page === 'test' && test && !attemptId && (
         <Section className="grid gap-2 bg-blue-600/75">
           <div />
         </Section>
       )}
 
-      {/* test page entry */}
-      {test && !section && !question && (
+      {/* test page entry, setting attemptId and starting test sections */}
+      {page === 'test' && test && !attemptId && (
         <TestEntry
           title="Mock Test"
           description="Lorem ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsumipsum"
           sections={sections}
           totalQuestionCount={120}
           attempts={2}
+          attemptId={crypto.randomUUID()}
         />
       )}
-      {/* section page entry */}
-      {test && section && !question && (
+      {/* section page entry should never come up when question is present */}
+      {/*test && (
         <SectionEntry
           section={
             sections.find((value) => value?.id === section) ?? {
@@ -94,22 +118,18 @@ export default async function TestPage({ params }: { params: { slug: string[] } 
             }
           }
         />
-      )}
+      )*/}
 
-      {/* test page entry */}
       {/* Randomize tests presented to user */}
-      {test && section && question && question !== 'finish' && (
+      {page === 'test' && test && attemptId && (
         <Question
-          section={section}
-          sectionName={sections?.find((value) => value?.id === section)?.name}
           test={test}
-          question={question}
+          sections={sections}
           // @ts-ignore
           records={records}
+          attemptId={attemptId}
         />
       )}
-      {/* Finish test component */}
-      {test && section && question && question === 'finish' && <FinishTest />}
     </Main>
   )
 }
