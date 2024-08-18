@@ -8,6 +8,7 @@ import { RadioGroup, RadioGroupItem } from './ui/radio-group'
 import { Label } from './ui/label'
 import { usePathname, useRouter } from 'next/navigation'
 import { Star } from './star'
+import { CircleAlert } from 'lucide-react'
 
 export type TestSection = {
   id: string
@@ -20,9 +21,9 @@ export const TestEntry: FC<{
   sections: TestSection[]
   totalQuestionCount: number
   attempts: number
-}> = ({ title, description, sections, totalQuestionCount, attempts }) => {
-  const [display, setDisplay] = useState<'entry' | 'sections'>('sections')
-  const [section, setSection] = useState<string>()
+  attemptId: string
+}> = ({ title, description, sections, totalQuestionCount, attempts, attemptId }) => {
+  const [display, setDisplay] = useState<'entry' | 'sections'>('entry')
   const { push } = useRouter()
   const pathname = usePathname()
 
@@ -44,11 +45,28 @@ export const TestEntry: FC<{
           </div>*/}
         </div>
         {display === 'entry' && (
-          <>
-            <p className="text-balance text-center">{description}</p>
-            <p>{attempts}/4 Attempts</p>
-            <Button onClick={() => setDisplay('sections')}>Next</Button>
-          </>
+          <Container className="grid gap-4 place-items-center">
+            <div className="p-4 w-full bg-muted-foreground/25 rounded-sm">
+              <p className="flex items-center gap-2 mb-6">
+                <CircleAlert className="w-4 h-4" />
+                Instructions
+              </p>
+              <ul className="list-disc ml-10">
+                {[
+                  'Choose a quiet and comfortable setting for taking the test where interruptions are unlikely. Make sure that your environment is devoid of any distractions to help keep your focus during the entire test.',
+                  'Ensure that your computer and internet connection are functioning correctly. Access the test using a reliable and updated web browser.',
+                  'Once initiated, the timed test cannot be paused. Be ready to go through the entire session without taking breaks.',
+                  'Read each question thoroughly along with all provided answer choices before making your selection. Remember, there are no penalties for wrong answers.',
+                  'Manage your time wisely to ensure that you can attempt each question within the allotted time.',
+                ].map((inx, index) => (
+                  <li key={index}>{inx}</li>
+                ))}
+              </ul>
+            </div>
+            <Button onClick={() => setDisplay('sections')} className="max-w-lg">
+              Continue
+            </Button>
+          </Container>
         )}
         {display === 'sections' && (
           <Container className="gap-4 grid">
@@ -71,12 +89,8 @@ export const TestEntry: FC<{
             {/*</RadioGroup>*/}
             <Button
               onClick={() => {
-                if (!section) {
-                  return alert('Select a section to get started')
-                }
-
-                // push to section
-                push(`${pathname}/${section}`)
+                // push to first section
+                push(`${pathname}/${attemptId}`)
               }}
             >
               Start test

@@ -19,6 +19,7 @@ import {
   CarouselPrevious,
 } from '@app/components/ui/carousel'
 import { useQueryState, parseAsInteger } from 'nuqs'
+import { cn } from '@app/lib/utils'
 
 type Args = {
   test: string
@@ -26,12 +27,11 @@ type Args = {
   records: Record<string, any>[]
   attemptId: string
 }
-export const Question = ({ test, sections, records, attemptId }: Args) => {
+export const Solutions = ({ test, sections, records, attemptId }: Args) => {
   const [answers, setAnswers] = useState<string[]>(new Array<string>(30))
   const router = useRouter()
   const [api, setApi] = useState<CarouselApi>()
-  const [section, setSection] = useQueryState('section', { defaultValue: sections[0]?.id })
-  const [current, setCurrent] = useQueryState('question', parseAsInteger.withDefault(0))
+  const [current, setCurrent] = useQueryState('current', parseAsInteger.withDefault(0))
   const [count, setCount] = useState(0)
 
   useEffect(() => {
@@ -42,10 +42,19 @@ export const Question = ({ test, sections, records, attemptId }: Args) => {
     setCount(api.scrollSnapList().length)
     setCurrent(api.selectedScrollSnap() + 1)
 
+    if (typeof window !== 'undefined') {
+      const attemptedAnswers = localStorage.getItem('answers')
+      if (attemptedAnswers) {
+        setAnswers(JSON.parse(attemptedAnswers))
+      }
+    }
+
     api.on('select', () => {
       setCurrent(api.selectedScrollSnap() + 1)
     })
   }, [api])
+
+  console.log(answers, ':::List of answers')
 
   return (
     <Section className="max-w-screen px-8">
@@ -97,6 +106,7 @@ export const Question = ({ test, sections, records, attemptId }: Args) => {
                   <>
                     <RadioGroup
                       defaultValue={answers[current - 1]}
+                      disabled
                       onValueChange={(value) =>
                         setAnswers((_prev) => {
                           _prev[current - 1] = value
@@ -111,10 +121,18 @@ export const Question = ({ test, sections, records, attemptId }: Args) => {
                         .map(([field, value], index) => (
                           <div
                             key={index}
-                            className="flex items-center border border-muted-foreground/45 p-2 rounded-md justify-between gap-4"
+                            className={cn(
+                              'flex items-center border border-muted-foreground/45 p-2 rounded-md justify-between gap-4',
+                              {
+                                'bg-green-600 text-black':
+                                  answers[current - 1] === q.fields['Correct Answer'],
+                                'bg-red-600 text-white':
+                                  answers[current - 1] !== q.fields['Correct Answer'],
+                              },
+                            )}
                           >
                             <div className="items-center justify-start space-x-2">
-                              <RadioGroupItem value={value as string} id={field} />
+                              <RadioGroupItem disabled value={value as string} id={field} />
                               <Label htmlFor={field} className="text-left items-center font-bold">
                                 {field}: {value as string}
                               </Label>
@@ -141,36 +159,21 @@ export const Question = ({ test, sections, records, attemptId }: Args) => {
                   {api?.canScrollNext() && (
                     <Button
                       onClick={() => {
-                        if (typeof answers[current - 1] !== 'undefined') {
-                          setCurrent(api.selectedScrollSnap() + 1)
-                          api.scrollNext()
-                        } else {
-                          alert('Pick an option to continue')
-                        }
+                        setCurrent(api.selectedScrollSnap() + 1)
+                        api.scrollNext()
                       }}
                     >
                       Next
                     </Button>
                   )}
                   {!api?.canScrollNext() && (
-                    <ConfirmSubmitDialog
-                      onConfirm={() => {
-                        // TODO: call payload to store attempt to DB
-                        if (typeof answers[current - 1] !== 'undefined') {
-                          // TODO: store answers array to localStorage for solution
-                          if (typeof window !== 'undefined') {
-                            localStorage.setItem('answers', JSON.stringify(answers))
-                          }
-
-                          router.push(`/test/${test}/${section}/finish`)
-                        } else {
-                          alert('Pick an option to continue')
-                          // setCurrent(api.selectedScrollSnap() + 1)
-                        }
+                    <Button
+                      onClick={() => {
+                        router.push('/overview')
                       }}
                     >
-                      <Button>Finish</Button>
-                    </ConfirmSubmitDialog>
+                      Back to dashboard
+                    </Button>
                   )}
                 </div>
               </Container>
