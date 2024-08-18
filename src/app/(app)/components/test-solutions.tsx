@@ -18,8 +18,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@app/components/ui/carousel'
-import { useQueryState, parseAsInteger } from 'nuqs'
-import { cn } from '@app/lib/utils'
+import { useQueryState, parseAsInteger, parseAsBoolean } from 'nuqs'
 
 type Args = {
   test: string
@@ -28,10 +27,12 @@ type Args = {
   attemptId: string
 }
 export const Solutions = ({ test, sections, records, attemptId }: Args) => {
-  const [answers, setAnswers] = useState<string[]>(new Array<string>(30))
+  const [answers, setAnswers] = useState<string[]>(new Array<string>(records.length))
   const router = useRouter()
   const [api, setApi] = useState<CarouselApi>()
-  const [current, setCurrent] = useQueryState('current', parseAsInteger.withDefault(0))
+  const [section, setSection] = useQueryState('section', { defaultValue: sections[0]?.id })
+  const [current, setCurrent] = useQueryState('question', parseAsInteger.withDefault(0))
+  const [finish, setFinish] = useQueryState('finish', parseAsBoolean.withDefault(false))
   const [count, setCount] = useState(0)
 
   useEffect(() => {
@@ -41,28 +42,29 @@ export const Solutions = ({ test, sections, records, attemptId }: Args) => {
 
     setCount(api.scrollSnapList().length)
     setCurrent(api.selectedScrollSnap() + 1)
-
-    if (typeof window !== 'undefined') {
-      const attemptedAnswers = localStorage.getItem('answers')
-      if (attemptedAnswers) {
-        setAnswers(JSON.parse(attemptedAnswers))
-      }
-    }
+    setSection(section ?? sections[0]?.id)
+    setFinish(finish ?? false)
 
     api.on('select', () => {
       setCurrent(api.selectedScrollSnap() + 1)
     })
   }, [api])
 
-  console.log(answers, ':::List of answers')
+  useEffect(() => {
+    if (finish) {
+      alert('Are you sure you want ot submit')
+    }
+  }, [finish])
 
   return (
     <Section className="max-w-screen px-8">
       <Section className="!p-8 w-full border border-blue-300 flex items-center justify-between">
-        <h1 className="text-3xl font-semibold capitalize">{sections[0]?.name}</h1>
+        <h1 className="text-3xl font-semibold capitalize">
+          {sections.find((value) => value?.id === section)?.name}
+        </h1>
 
         <>
-          <CountdownTimer minutes={1} />
+          <CountdownTimer minutes={120} />
           <div className="flex items-center space-x-2">
             <span>
               {/* @ts-ignore */}
@@ -106,7 +108,6 @@ export const Solutions = ({ test, sections, records, attemptId }: Args) => {
                   <>
                     <RadioGroup
                       defaultValue={answers[current - 1]}
-                      disabled
                       onValueChange={(value) =>
                         setAnswers((_prev) => {
                           _prev[current - 1] = value
@@ -121,18 +122,10 @@ export const Solutions = ({ test, sections, records, attemptId }: Args) => {
                         .map(([field, value], index) => (
                           <div
                             key={index}
-                            className={cn(
-                              'flex items-center border border-muted-foreground/45 p-2 rounded-md justify-between gap-4',
-                              {
-                                'bg-green-600 text-black':
-                                  answers[current - 1] === q.fields['Correct Answer'],
-                                'bg-red-600 text-white':
-                                  answers[current - 1] !== q.fields['Correct Answer'],
-                              },
-                            )}
+                            className="flex items-center border border-muted-foreground/45 p-2 rounded-md justify-between gap-4"
                           >
                             <div className="items-center justify-start space-x-2">
-                              <RadioGroupItem disabled value={value as string} id={field} />
+                              <RadioGroupItem value={value as string} id={field} />
                               <Label htmlFor={field} className="text-left items-center font-bold">
                                 {field}: {value as string}
                               </Label>
@@ -159,21 +152,45 @@ export const Solutions = ({ test, sections, records, attemptId }: Args) => {
                   {api?.canScrollNext() && (
                     <Button
                       onClick={() => {
-                        setCurrent(api.selectedScrollSnap() + 1)
-                        api.scrollNext()
+                        if (typeof answers[current - 1] !== 'undefined') {
+                          setCurrent(api.selectedScrollSnap() + 1)
+                          api.scrollNext()
+
+                          if (current === 30 || current === 60 || current === 90) {
+                            setSection(
+                              sections[sections.findIndex((value) => value?.id === section) + 1]
+                                ?.id,
+                            )
+                          }
+                        } else {
+                          alert('Pick an option to continue')
+                        }
                       }}
                     >
-                      Next
+                      {current === 30 || current === 60 || current === 90
+                        ? 'Start next section'
+                        : 'Next'}
                     </Button>
                   )}
                   {!api?.canScrollNext() && (
-                    <Button
-                      onClick={() => {
-                        router.push('/overview')
+                    <ConfirmSubmitDialog
+                      onConfirm={() => {
+                        // TODO: call payload to store attempt to DB
+                        if (typeof answers[current - 1] !== 'undefined') {
+                          // TODO: store answers array to localStorage for solution
+                          if (typeof window !== 'undefined') {
+                            localStorage.setItem('answers', JSON.stringify(answers))
+                          }
+
+                          router.push(`/test/${test}/${attemptId}/finish`)
+                        } else {
+                          alert('Pick an option to continue')
+                          // setCurrent(api.selectedScrollSnap() + 1)
+                        }
                       }}
                     >
-                      Back to dashboard
-                    </Button>
+                      <Button>Finish</Button>
+                    </ConfirmSubmitDialog>
                   )}
                 </div>
               </Container>
