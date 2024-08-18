@@ -18,7 +18,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@app/components/ui/carousel'
-import { useQueryState, parseAsInteger } from 'nuqs'
+import { useQueryState, parseAsInteger, parseAsBoolean } from 'nuqs'
 
 type Args = {
   test: string
@@ -27,11 +27,12 @@ type Args = {
   attemptId: string
 }
 export const Question = ({ test, sections, records, attemptId }: Args) => {
-  const [answers, setAnswers] = useState<string[]>(new Array<string>(30))
+  const [answers, setAnswers] = useState<string[]>(new Array<string>(records.length))
   const router = useRouter()
   const [api, setApi] = useState<CarouselApi>()
   const [section, setSection] = useQueryState('section', { defaultValue: sections[0]?.id })
   const [current, setCurrent] = useQueryState('question', parseAsInteger.withDefault(0))
+  const [finish, setFinish] = useQueryState('finish', parseAsBoolean.withDefault(false))
   const [count, setCount] = useState(0)
 
   useEffect(() => {
@@ -41,19 +42,29 @@ export const Question = ({ test, sections, records, attemptId }: Args) => {
 
     setCount(api.scrollSnapList().length)
     setCurrent(api.selectedScrollSnap() + 1)
+    setSection(section ?? sections[0]?.id)
+    setFinish(finish ?? false)
 
     api.on('select', () => {
       setCurrent(api.selectedScrollSnap() + 1)
     })
   }, [api])
 
+  useEffect(() => {
+    if (finish) {
+      alert('Are you sure you want ot submit')
+    }
+  }, [finish])
+
   return (
     <Section className="max-w-screen px-8">
       <Section className="!p-8 w-full border border-blue-300 flex items-center justify-between">
-        <h1 className="text-3xl font-semibold capitalize">{sections[0]?.name}</h1>
+        <h1 className="text-3xl font-semibold capitalize">
+          {sections.find((value) => value?.id === section)?.name}
+        </h1>
 
         <>
-          <CountdownTimer minutes={1} />
+          <CountdownTimer minutes={120} />
           <div className="flex items-center space-x-2">
             <span>
               {/* @ts-ignore */}
@@ -144,12 +155,21 @@ export const Question = ({ test, sections, records, attemptId }: Args) => {
                         if (typeof answers[current - 1] !== 'undefined') {
                           setCurrent(api.selectedScrollSnap() + 1)
                           api.scrollNext()
+
+                          if (current === 30 || current === 60 || current === 90) {
+                            setSection(
+                              sections[sections.findIndex((value) => value?.id === section) + 1]
+                                ?.id,
+                            )
+                          }
                         } else {
                           alert('Pick an option to continue')
                         }
                       }}
                     >
-                      Next
+                      {current === 30 || current === 60 || current === 90
+                        ? 'Start next section'
+                        : 'Next'}
                     </Button>
                   )}
                   {!api?.canScrollNext() && (
@@ -162,7 +182,7 @@ export const Question = ({ test, sections, records, attemptId }: Args) => {
                             localStorage.setItem('answers', JSON.stringify(answers))
                           }
 
-                          router.push(`/test/${test}/${section}/finish`)
+                          router.push(`/test/${test}/${attemptId}/finish`)
                         } else {
                           alert('Pick an option to continue')
                           // setCurrent(api.selectedScrollSnap() + 1)
