@@ -69,7 +69,7 @@ class Airtable {
 
       if (response.ok) {
         const json = await response.json()
-        console.log(json, ':::list table records')
+
         return json
       } else {
         console.log(response.status, response.statusText, ':::Error in network call')
