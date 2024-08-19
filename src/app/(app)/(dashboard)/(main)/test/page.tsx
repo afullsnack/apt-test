@@ -8,7 +8,7 @@ import { getPayloadHMR } from '@payloadcms/next/utilities'
 import config from '@payload-config'
 
 export default async function Test() {
-  const payload = await getPayloadHMR({ config })
+  // const payload = await getPayloadHMR({ config })
   // TODO: find all sections and render
 
   return (
@@ -51,6 +51,14 @@ export default async function Test() {
             <TestCard
               title="General Knowledge (Physics, Chemistry, ICT)"
               description="General Knowledge in Physics, Chemistry, and ICT refers to a broad understanding of fundamental concepts, principles, and recent developments in these fields"
+              testCount={50}
+              questionsCount={30}
+            />
+          </Link>
+          <Link href={'https://nukleus-gg.gitbook.io/aptitude-test-docs/questions/logic'} passHref>
+            <TestCard
+              title="Logic"
+              description="Logic, in academic parlance, is the systematic study of valid reasoning and inference. It involves the analysis of arguments, the formalization of reasoning patterns, and the development of methods for distinguishing between valid and invalid conclusions. Logic encompasses formal systems of deduction, induction, and abduction, and serves as a foundational discipline in philosophy, mathematics, computer science, and linguistics."
               testCount={50}
               questionsCount={30}
             />

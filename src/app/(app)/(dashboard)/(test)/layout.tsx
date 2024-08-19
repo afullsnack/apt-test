@@ -19,11 +19,7 @@ type Args = {
 }
 
 const TesterLayout = ({ children }: Args) => {
-  return (
-    <Layout className={cn(inter.className, 'h-screen')}>
-      <body>{children}</body>
-    </Layout>
-  )
+  return <body>{children}</body>
 }
 
 export default TesterLayout
