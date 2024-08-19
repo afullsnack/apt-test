@@ -8,7 +8,7 @@ import { RadioGroup, RadioGroupItem } from './ui/radio-group'
 import { Label } from './ui/label'
 import { Button } from './ui/button'
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { ConfirmSubmitDialog } from './confirm-submit-dialog'
 import {
   Carousel,
@@ -19,6 +19,7 @@ import {
   CarouselPrevious,
 } from '@app/components/ui/carousel'
 import { useQueryState, parseAsInteger, parseAsBoolean } from 'nuqs'
+import { FinishTestDialog } from './finish-dialog'
 
 type Args = {
   test: string
@@ -28,12 +29,19 @@ type Args = {
 }
 export const Question = ({ test, sections, records, attemptId }: Args) => {
   const [answers, setAnswers] = useState<string[]>(new Array<string>(records.length))
-  const router = useRouter()
   const [api, setApi] = useState<CarouselApi>()
   const [section, setSection] = useQueryState('section', { defaultValue: sections[0]?.id })
   const [current, setCurrent] = useQueryState('question', parseAsInteger.withDefault(0))
   const [finish, setFinish] = useQueryState('finish', parseAsBoolean.withDefault(false))
   const [count, setCount] = useState(0)
+
+  const [score, setScore] = useState(0)
+  const [showScoreDialog, setShowScoreDialog] = useState<boolean>(false)
+
+  const pathname = usePathname()
+  // const searchParams = useSearchParams()
+
+  console.log(pathname, ':::pathname')
 
   useEffect(() => {
     if (!api) {
@@ -52,12 +60,33 @@ export const Question = ({ test, sections, records, attemptId }: Args) => {
 
   useEffect(() => {
     if (finish) {
-      alert('Are you sure you want ot submit')
+      // TODO: compute total score
+      // TODO: trigger dialog toggle and pass in score and solution link
+      let correct = 0
+      let failed = 0
+      for (const record of records) {
+        if (
+          answers[records.findIndex((value) => value?.id === record?.id)] ===
+          record?.fields['Correct Answer']
+        ) {
+          correct += 1
+        } else {
+          failed += 1
+        }
+      }
+
+      setScore(Math.floor((correct / 120) * 100))
+      setShowScoreDialog(true)
     }
   }, [finish])
 
   return (
     <Section className="max-w-screen px-8">
+      <FinishTestDialog
+        scorePercent={score}
+        open={showScoreDialog}
+        solutionLink={`/solution/mock-test/${attemptId}`}
+      />
       <Section className="!p-8 w-full border border-blue-300 flex items-center justify-between">
         <h1 className="text-3xl font-semibold capitalize">
           {sections.find((value) => value?.id === section)?.name}
@@ -82,8 +111,7 @@ export const Question = ({ test, sections, records, attemptId }: Args) => {
         opts={{
           align: 'center',
           loop: false,
-          dragThreshold: 0,
-          dragFree: false,
+          startIndex: current - 1,
           watchDrag: false,
         }}
         setApi={setApi}
@@ -179,10 +207,12 @@ export const Question = ({ test, sections, records, attemptId }: Args) => {
                         if (typeof answers[current - 1] !== 'undefined') {
                           // TODO: store answers array to localStorage for solution
                           if (typeof window !== 'undefined') {
-                            localStorage.setItem('answers', JSON.stringify(answers))
+                            localStorage.setItem(`answers:${attemptId}`, JSON.stringify(answers))
                           }
 
-                          router.push(`/test/${test}/${attemptId}/finish`)
+                          setFinish(true)
+
+                          // router.push(`/test/${test}/${attemptId}/finish`)
                         } else {
                           alert('Pick an option to continue')
                           // setCurrent(api.selectedScrollSnap() + 1)
