@@ -1,3 +1,8 @@
+/**
+ * Solutons component, cycle through questions and display correct answers
+ * params: test, sections, records, attemptId
+ */
+
 'use client'
 
 import { ConfirmCloseDialog } from '@/app/(app)/components/confirm-close-dialog'
@@ -8,17 +13,13 @@ import { RadioGroup, RadioGroupItem } from './ui/radio-group'
 import { Label } from './ui/label'
 import { Button } from './ui/button'
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { ConfirmSubmitDialog } from './confirm-submit-dialog'
-import {
-  Carousel,
-  CarouselApi,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@app/components/ui/carousel'
+import { Carousel, CarouselApi, CarouselContent, CarouselItem } from '@app/components/ui/carousel'
 import { useQueryState, parseAsInteger, parseAsBoolean } from 'nuqs'
+import { FinishTestDialog } from './finish-dialog'
+import Link from 'next/link'
+import { cn } from '@app/lib/utils'
 
 type Args = {
   test: string
@@ -28,33 +29,65 @@ type Args = {
 }
 export const Solutions = ({ test, sections, records, attemptId }: Args) => {
   const [answers, setAnswers] = useState<string[]>(new Array<string>(records.length))
-  const router = useRouter()
   const [api, setApi] = useState<CarouselApi>()
   const [section, setSection] = useQueryState('section', { defaultValue: sections[0]?.id })
   const [current, setCurrent] = useQueryState('question', parseAsInteger.withDefault(0))
-  const [finish, setFinish] = useQueryState('finish', parseAsBoolean.withDefault(false))
+  const [finish, setFinish] = useQueryState('finish', parseAsBoolean.withDefault(true))
   const [count, setCount] = useState(0)
+
+  const pathname = usePathname()
+  // const searchParams = useSearchParams()
+
+  console.log(pathname, ':::pathname')
 
   useEffect(() => {
     if (!api) {
       return
     }
 
+    // TODO: store answers array to localStorage for solution
+    if (typeof window !== 'undefined') {
+      const localAnswers = localStorage.getItem(`answers:${attemptId}`)
+      if (localAnswers) {
+        setAnswers(JSON.parse(localAnswers))
+      } else {
+        alert(
+          'The answers for this attempt is not found, kindly take a new test to see the solutons',
+        )
+      }
+    }
+
     setCount(api.scrollSnapList().length)
     setCurrent(api.selectedScrollSnap() + 1)
     setSection(section ?? sections[0]?.id)
-    setFinish(finish ?? false)
+    setFinish(finish ?? true)
 
     api.on('select', () => {
       setCurrent(api.selectedScrollSnap() + 1)
     })
   }, [api])
 
-  useEffect(() => {
-    if (finish) {
-      alert('Are you sure you want ot submit')
-    }
-  }, [finish])
+  // useEffect(() => {
+  //   if (finish) {
+  //     // TODO: compute total score
+  //     // TODO: trigger dialog toggle and pass in score and solution link
+  //     let correct = 0
+  //     let failed = 0
+  //     for (const record of records) {
+  //       if (
+  //         answers[records.findIndex((value) => value?.id === record?.id)] ===
+  //         record?.fields['Correct Answer']
+  //       ) {
+  //         correct += 1
+  //       } else {
+  //         failed += 1
+  //       }
+  //     }
+
+  //     setScore(Math.floor((correct / 120) * 100))
+  //     setShowScoreDialog(true)
+  //   }
+  // }, [finish])
 
   return (
     <Section className="max-w-screen px-8">
@@ -64,7 +97,7 @@ export const Solutions = ({ test, sections, records, attemptId }: Args) => {
         </h1>
 
         <>
-          <CountdownTimer minutes={120} />
+          {/*<CountdownTimer minutes={120} />*/}
           <div className="flex items-center space-x-2">
             <span>
               {/* @ts-ignore */}
@@ -82,8 +115,7 @@ export const Solutions = ({ test, sections, records, attemptId }: Args) => {
         opts={{
           align: 'center',
           loop: false,
-          dragThreshold: 0,
-          dragFree: false,
+          startIndex: current - 1,
           watchDrag: false,
         }}
         setApi={setApi}
@@ -114,6 +146,7 @@ export const Solutions = ({ test, sections, records, attemptId }: Args) => {
                           return _prev
                         })
                       }
+                      disabled
                       className="p-4 rounded-sm"
                     >
                       {Object.entries(q.fields)
@@ -122,10 +155,16 @@ export const Solutions = ({ test, sections, records, attemptId }: Args) => {
                         .map(([field, value], index) => (
                           <div
                             key={index}
-                            className="flex items-center border border-muted-foreground/45 p-2 rounded-md justify-between gap-4"
+                            className={cn(
+                              'flex items-center border border-muted-foreground/45 p-2 rounded-md justify-between gap-4',
+                              {
+                                'bg-green-500 text-black':
+                                  value === q.fields[current - 1]['Correct Answer'],
+                              },
+                            )}
                           >
                             <div className="items-center justify-start space-x-2">
-                              <RadioGroupItem value={value as string} id={field} />
+                              <RadioGroupItem disabled value={value as string} id={field} />
                               <Label htmlFor={field} className="text-left items-center font-bold">
                                 {field}: {value as string}
                               </Label>
@@ -167,30 +206,13 @@ export const Solutions = ({ test, sections, records, attemptId }: Args) => {
                         }
                       }}
                     >
-                      {current === 30 || current === 60 || current === 90
-                        ? 'Start next section'
-                        : 'Next'}
+                      {'Next'}
                     </Button>
                   )}
                   {!api?.canScrollNext() && (
-                    <ConfirmSubmitDialog
-                      onConfirm={() => {
-                        // TODO: call payload to store attempt to DB
-                        if (typeof answers[current - 1] !== 'undefined') {
-                          // TODO: store answers array to localStorage for solution
-                          if (typeof window !== 'undefined') {
-                            localStorage.setItem('answers', JSON.stringify(answers))
-                          }
-
-                          router.push(`/test/${test}/${attemptId}/finish`)
-                        } else {
-                          alert('Pick an option to continue')
-                          // setCurrent(api.selectedScrollSnap() + 1)
-                        }
-                      }}
-                    >
-                      <Button>Finish</Button>
-                    </ConfirmSubmitDialog>
+                    <Link href={'/overview'} passHref>
+                      <Button>Dashboard</Button>
+                    </Link>
                   )}
                 </div>
               </Container>

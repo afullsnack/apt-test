@@ -3,7 +3,6 @@ import { SectionEntry } from '@app/components/test-section-entry'
 import { Main, Section, Container } from '@app/components/craft'
 import { Question } from '@app/components/test-questions'
 import { Button } from '@app/components/ui/button'
-import { FinishTest } from '@app/components/finish'
 import crypto from 'node:crypto'
 
 import { Airtable, NoBaseIdError } from '@/airtable.config'
