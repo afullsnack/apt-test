@@ -13,7 +13,7 @@ const Index = () => {
   return (
     <Main className="h-screen !p-0 overflow-clip">
       <Section className="grid grid-cols-2 !p-0 h-full w-full">
-        <Container className="flex flex-col gap-4 w-full h-full place-items-start justify-start">
+        <Container className="flex flex-col gap-4 w-full h-full place-items-start justify-start relative">
           <Image
             src={logo}
             alt="logo"
@@ -33,6 +33,17 @@ const Index = () => {
               Get started <ArrowRight className="size-4 ml-4" />{' '}
             </Button>
           </Link>
+
+          <div className="h-12 border-t grid place-items-center border-border dark:border-border absolute bottom-0 right-0 left-0">
+            <Container className="flex gap-4 flex-row w-full justify-center items-center m-0 !p-0">
+              <Link href="/help-center">Help Center</Link>
+              <Link href="/terms-of-service">Terms of Service</Link>
+              <Link href="/privacy-policy">Privacy Policy</Link>
+              <p className="text-muted-foreground">
+                ©2024 <Link href="https://ruco.tech">Ruco tech</Link>
+              </p>
+            </Container>
+          </div>
         </Container>
         <Container className="overflow-hidden !p-0 w-full h-full">
           <Image
