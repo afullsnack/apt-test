@@ -78,9 +78,9 @@ export default async function TestPage({ params }: { params: { slug: string[] } 
         {page === 'solution' && test && attemptId && (
           <Solutions
             test={test}
-            sections={sections}
-            // @ts-ignore
-            records={records}
+            // sections={sections}
+            // // @ts-ignore
+            // records={records}
             attemptId={attemptId}
           />
         )}
