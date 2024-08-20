@@ -29,7 +29,7 @@ const RootLayout = ({ children }: Args) => {
           <Link href="/terms-of-service">Terms of Service</Link>
           <Link href="/privacy-policy">Privacy Policy</Link>
           <p className="text-muted-foreground">
-            ©2024 <Link href="https://ruco.tech">Ruco tech</Link>
+            ©{new Date(Date.now()).getFullYear()} <Link href="https://ruco.tech">Ruco tech</Link>
           </p>
         </Container>
       </footer>
