@@ -23,14 +23,16 @@ import { cn } from '@app/lib/utils'
 
 type Args = {
   test: string
-  sections: Record<string, any>[]
-  records: Record<string, any>[]
+  // sections: Record<string, any>[]
+  // records: Record<string, any>[]
   attemptId: string
 }
-export const Solutions = ({ test, sections, records, attemptId }: Args) => {
-  const [answers, setAnswers] = useState<string[]>(new Array<string>(records.length))
+export const Solutions = ({ test, attemptId }: Args) => {
+  const [answers, setAnswers] = useState<string[]>([])
+  const [records, setRecords] = useState<any[]>([])
+  const [sections, setSections] = useState<any[]>([])
   const [api, setApi] = useState<CarouselApi>()
-  const [section, setSection] = useQueryState('section', { defaultValue: sections[0]?.id })
+  const [section, setSection] = useQueryState('section', { defaultValue: '' })
   const [current, setCurrent] = useQueryState('question', parseAsInteger.withDefault(0))
   const [finish, setFinish] = useQueryState('finish', parseAsBoolean.withDefault(true))
   const [count, setCount] = useState(0)
@@ -49,7 +51,15 @@ export const Solutions = ({ test, sections, records, attemptId }: Args) => {
     if (typeof window !== 'undefined') {
       const localAnswers = localStorage.getItem(`answers:${attemptId}`)
       if (localAnswers) {
-        setAnswers(JSON.parse(localAnswers))
+        const answerObj = JSON.parse(localAnswers) satisfies {
+          answers: any[]
+          records: any[]
+          sections: any[]
+        }
+        setAnswers(answerObj?.answers)
+        setSections(answerObj?.sections)
+        setSection(section ?? answerObj?.sections[0]?.id)
+        setRecords(answerObj?.records)
       } else {
         alert(
           'The answers for this attempt is not found, kindly take a new test to see the solutons',
@@ -59,35 +69,12 @@ export const Solutions = ({ test, sections, records, attemptId }: Args) => {
 
     setCount(api.scrollSnapList().length)
     setCurrent(api.selectedScrollSnap() + 1)
-    setSection(section ?? sections[0]?.id)
     setFinish(finish ?? true)
 
     api.on('select', () => {
       setCurrent(api.selectedScrollSnap() + 1)
     })
   }, [api])
-
-  // useEffect(() => {
-  //   if (finish) {
-  //     // TODO: compute total score
-  //     // TODO: trigger dialog toggle and pass in score and solution link
-  //     let correct = 0
-  //     let failed = 0
-  //     for (const record of records) {
-  //       if (
-  //         answers[records.findIndex((value) => value?.id === record?.id)] ===
-  //         record?.fields['Correct Answer']
-  //       ) {
-  //         correct += 1
-  //       } else {
-  //         failed += 1
-  //       }
-  //     }
-
-  //     setScore(Math.floor((correct / 120) * 100))
-  //     setShowScoreDialog(true)
-  //   }
-  // }, [finish])
 
   return (
     <Section className="max-w-screen px-8">

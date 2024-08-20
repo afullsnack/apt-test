@@ -1,3 +1,7 @@
+/**
+ * Test questions client component
+ * params: test, sections, recrods, attemptId
+ */
 'use client'
 
 import { ConfirmCloseDialog } from '@/app/(app)/components/confirm-close-dialog'
@@ -93,7 +97,12 @@ export const Question = ({ test, sections, records, attemptId }: Args) => {
         </h1>
 
         <>
-          <CountdownTimer minutes={120} />
+          <CountdownTimer
+            minutes={120}
+            onFinish={() => {
+              setFinish(true)
+            }}
+          />
           <div className="flex items-center space-x-2">
             <span>
               {/* @ts-ignore */}
@@ -207,12 +216,17 @@ export const Question = ({ test, sections, records, attemptId }: Args) => {
                         if (typeof answers[current - 1] !== 'undefined') {
                           // TODO: store answers array to localStorage for solution
                           if (typeof window !== 'undefined') {
-                            localStorage.setItem(`answers:${attemptId}`, JSON.stringify(answers))
+                            localStorage.setItem(
+                              `answers:${attemptId}`,
+                              JSON.stringify({
+                                answers,
+                                records,
+                                sections,
+                              }),
+                            )
                           }
 
                           setFinish(true)
-
-                          // router.push(`/test/${test}/${attemptId}/finish`)
                         } else {
                           alert('Pick an option to continue')
                           // setCurrent(api.selectedScrollSnap() + 1)

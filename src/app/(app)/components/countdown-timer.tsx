@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react'
 
-const CountdownTimer = ({ minutes }: { minutes: number }) => {
+const CountdownTimer = ({ minutes, onFinish }: { minutes: number; onFinish: () => void }) => {
   const [timeLeft, setTimeLeft] = useState(minutes * 60)
 
   const formatTime = useCallback((seconds: number) => {
@@ -14,7 +14,7 @@ const CountdownTimer = ({ minutes }: { minutes: number }) => {
   useEffect(() => {
     if (timeLeft <= 0) {
       // onTimerEnd()
-      alert('Timer ended! stop test')
+      onFinish()
       return
     }
 
