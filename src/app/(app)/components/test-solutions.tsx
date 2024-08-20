@@ -20,6 +20,7 @@ import { useQueryState, parseAsInteger, parseAsBoolean } from 'nuqs'
 import { FinishTestDialog } from './finish-dialog'
 import Link from 'next/link'
 import { cn } from '@app/lib/utils'
+import { Separator } from './ui/separator'
 
 type Args = {
   test: string
@@ -32,7 +33,7 @@ export const Solutions = ({ test, attemptId }: Args) => {
   const [records, setRecords] = useState<any[]>([])
   const [sections, setSections] = useState<any[]>([])
   const [api, setApi] = useState<CarouselApi>()
-  const [section, setSection] = useQueryState('section', { defaultValue: '' })
+  const [section, setSection] = useQueryState('section', { defaultValue: 'tblZ54YpYEXz4fT37' })
   const [current, setCurrent] = useQueryState('question', parseAsInteger.withDefault(0))
   const [finish, setFinish] = useQueryState('finish', parseAsBoolean.withDefault(true))
   const [count, setCount] = useState(0)
@@ -60,6 +61,8 @@ export const Solutions = ({ test, attemptId }: Args) => {
         setSections(answerObj?.sections)
         setSection(section ?? answerObj?.sections[0]?.id)
         setRecords(answerObj?.records)
+
+        // console.log(answerObj?.sections[0]?.id, ':::section')
       } else {
         alert(
           'The answers for this attempt is not found, kindly take a new test to see the solutons',
@@ -79,7 +82,7 @@ export const Solutions = ({ test, attemptId }: Args) => {
   return (
     <Section className="max-w-screen px-8">
       <Section className="!p-8 w-full border border-blue-300 flex items-center justify-between">
-        <h1 className="text-3xl font-semibold capitalize">
+        <h1 className="text-3xl font-semibold capitalize text-black">
           {sections.find((value) => value?.id === section)?.name}
         </h1>
 
@@ -126,7 +129,8 @@ export const Solutions = ({ test, attemptId }: Args) => {
                 {
                   <>
                     <RadioGroup
-                      defaultValue={answers[current - 1]}
+                      defaultValue={answers[current - 1]?.trim()}
+                      value={answers[current - 1]}
                       onValueChange={(value) =>
                         setAnswers((_prev) => {
                           _prev[current - 1] = value
@@ -145,8 +149,10 @@ export const Solutions = ({ test, attemptId }: Args) => {
                             className={cn(
                               'flex items-center border border-muted-foreground/45 p-2 rounded-md justify-between gap-4',
                               {
-                                'bg-green-500 text-black':
-                                  value === q.fields[current - 1]['Correct Answer'],
+                                'bg-green-500 text-black': value === q.fields['Correct Answer'],
+                                'bg-red-500 text-black':
+                                  value === answers[current - 1] &&
+                                  value !== q.fields['Correct Answer'],
                               },
                             )}
                           >
@@ -162,14 +168,22 @@ export const Solutions = ({ test, attemptId }: Args) => {
                     </RadioGroup>
                   </>
                 }
-                <div className="flex items-center justify-center gap-4 w-full ">
+                <div className="flex items-center justify-center gap-4 w-full">
                   {api?.canScrollPrev() && (
                     <Button
                       onClick={() => {
                         setCurrent(current! - 1)
                         api.scrollPrev()
-                        // if (typeof answers[current] !== 'undefined') {
-                        // }
+
+                        if (current + 1 <= 30) {
+                          setSection(sections[0]?.id)
+                        } else if (current + 1 > 30 && current + 1 <= 60) {
+                          setSection(sections[1]?.id)
+                        } else if (current + 1 > 60 && current + 1 <= 90) {
+                          setSection(sections[2]?.id)
+                        } else {
+                          setSection(sections[3]?.id)
+                        }
                       }}
                     >
                       Back
@@ -182,11 +196,14 @@ export const Solutions = ({ test, attemptId }: Args) => {
                           setCurrent(api.selectedScrollSnap() + 1)
                           api.scrollNext()
 
-                          if (current === 30 || current === 60 || current === 90) {
-                            setSection(
-                              sections[sections.findIndex((value) => value?.id === section) + 1]
-                                ?.id,
-                            )
+                          if (current + 1 <= 30) {
+                            setSection(sections[0]?.id)
+                          } else if (current + 1 > 30 && current + 1 <= 60) {
+                            setSection(sections[1]?.id)
+                          } else if (current + 1 > 60 && current + 1 <= 90) {
+                            setSection(sections[2]?.id)
+                          } else {
+                            setSection(sections[3]?.id)
                           }
                         } else {
                           alert('Pick an option to continue')
@@ -202,6 +219,12 @@ export const Solutions = ({ test, attemptId }: Args) => {
                     </Link>
                   )}
                 </div>
+
+                {q.fields['Explanation'] && (
+                  <div className="flex flex-col w-full border border-primary p-2">
+                    <p className="text-lg font-normal">{q.fields['Explanation']}</p>
+                  </div>
+                )}
               </Container>
             </CarouselItem>
           ))}
