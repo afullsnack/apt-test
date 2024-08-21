@@ -175,11 +175,11 @@ export const Solutions = ({ test, attemptId }: Args) => {
                         setCurrent(current! - 1)
                         api.scrollPrev()
 
-                        if (current + 1 <= 30) {
+                        if (current - 1 <= 30) {
                           setSection(sections[0]?.id)
-                        } else if (current + 1 > 30 && current + 1 <= 60) {
+                        } else if (current - 1 > 30 && current - 1 <= 60) {
                           setSection(sections[1]?.id)
-                        } else if (current + 1 > 60 && current + 1 <= 90) {
+                        } else if (current - 1 > 60 && current - 1 <= 90) {
                           setSection(sections[2]?.id)
                         } else {
                           setSection(sections[3]?.id)
