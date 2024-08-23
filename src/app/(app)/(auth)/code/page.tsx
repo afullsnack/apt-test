@@ -54,7 +54,13 @@ export default function Code() {
                 <Label htmlFor="password">Password</Label>
                 <Input id="password" type="password" />
               </div> */}
-                <Button type="submit" className="w-full" onClick={() => push('/overview')}>
+                <Button
+                  type="submit"
+                  className="w-full"
+                  onClick={() => {
+                    // push('/overview')
+                  }}
+                >
                   Login
                 </Button>
                 <div className="mt-4 text-center text-sm">
