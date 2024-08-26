@@ -1,4 +1,4 @@
-'use client'
+// 'use client'
 import {
   Form,
   FormControl,
@@ -15,92 +15,19 @@ import { zodResolver } from '@hookform/resolvers/zod'
 
 // settings page to handle profile pic upload, name and email change
 import { Container, Main, Section } from '@app/components/craft'
-import { Button } from '@app/components/ui/button'
-import Avvvatars from 'avvvatars-react'
+import { Suspense } from 'react'
+import { cookies } from 'next/headers'
+import { AccountSection } from './components/account'
 
 export default function Settings() {
+  const code = cookies().get('cbt_student_auth')?.value
   return (
     <Main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-      <Avatar />
-      <AccountSection />
+      <Suspense fallback={'Fetching user data...'}>
+        <AccountSection code={code!} />
+      </Suspense>
       {/* <PasswordChange /> */}
     </Main>
-  )
-}
-
-const Avatar = () => {
-  return (
-    <Section className="!p-0 grid gap-2">
-      <div className="flex items-center">
-        <Avvvatars size={64} radius={10} value="John Doe" shadow={true} style="shape" />
-      </div>
-    </Section>
-  )
-}
-
-// define form schema
-const formSchema = z.object({
-  fullName: z.string().min(4, { message: 'A minimum of 2 characters is required' }).max(50),
-  email: z.string().email({ message: 'Email must be provided' }),
-})
-const AccountSection = () => {
-  // 1. define form
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      fullName: '',
-      email: '',
-    },
-  })
-  // 2. define a submit handler.
-  // TODO: Call server action on submit
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values, ':::account details change')
-  }
-  // return form with handler to server actions
-  return (
-    <Section className="!p-0 grid gap-2">
-      <div className="flex items-center">
-        <h1 className="text-lg font-semibold md:text-xl">Details</h1>
-      </div>
-      <Container className="!p-0 !mx-0 !max-w-xl grid gap-2 w-full flex-1">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <FormField
-              control={form.control}
-              name="fullName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Full Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="John Doe" {...field} />
-                  </FormControl>
-                  <FormDescription>Update your full name</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="email@ruco.com" {...field} />
-                  </FormControl>
-                  <FormDescription>Update your email address</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit" size={'lg'}>
-              Save changes
-            </Button>
-          </form>
-        </Form>
-      </Container>
-    </Section>
   )
 }
 

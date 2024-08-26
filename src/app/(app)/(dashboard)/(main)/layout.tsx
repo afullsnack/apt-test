@@ -9,6 +9,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/app/(app)/lib/utils'
+import { deleteCookie, getCookie } from 'cookies-next'
 
 import {
   DropdownMenu,
@@ -21,6 +22,8 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from '@/app/(app)/components/ui/sheet'
 import '@app/global.css'
 import logo from '@app/assets/logo.png'
+import { useAction } from '../../hooks/useAction'
+import { logoutAction } from './logout-action'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -50,6 +53,8 @@ const DashboardLayout = ({ children }: Args) => {
   const router = useRouter()
 
   const [greeting, setGreeting] = useState(getGreeting())
+
+  const { loading, execute, error } = useAction(logoutAction, false)
 
   useEffect(() => {
     const timer = setInterval(() => setGreeting(getGreeting()), 60000)
@@ -97,9 +102,21 @@ const DashboardLayout = ({ children }: Args) => {
                 </Link>
                 <Link
                   href="#"
-                  onClick={(e) => {
+                  onClick={async (e) => {
                     e.preventDefault()
                     // TODO: call logout function
+                    e.preventDefault()
+                    deleteCookie('cbt_student_auth', { path: '/' })
+
+                    console.log(getCookie('cbt_student_auth'), ':::cookie')
+
+                    // router.replace('/')
+
+                    // const failed = await execute()
+                    // alert('Something went wrong login off, try again')
+                    // if (error) {
+                    //   alert(error.message)
+                    // }
                     router.replace('/')
                   }}
                   className={cn(
@@ -191,16 +208,26 @@ const DashboardLayout = ({ children }: Args) => {
                   </Link>
                   <Link
                     href="#"
-                    onClick={(e) => {
+                    onClick={async (e) => {
                       e.preventDefault()
-                      router.replace('/')
+                      await deleteCookie('cbt_student_auth', { path: '/' })
+
+                      console.log(getCookie('cbt_student_auth'), ':::cookie')
+
+                      // router.replace('/')
+
+                      // const failed = await execute()
+                      // alert('Something went wrong login off, try again')
+                      // if (error) {
+                      //   alert(error.message)
+                      // }
                     }}
                     className={cn(
                       'flex items-center gap-3 rounded-lg px-3 py-2 text-primary transition-all hover:text-primary',
                     )}
                   >
                     <LogOutIcon className="h-4 w-4" />
-                    Logut{' '}
+                    {loading ? 'Processing...' : 'Logut'}
                   </Link>
                   {/* <Link
                     href="#"

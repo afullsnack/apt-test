@@ -26,7 +26,7 @@ export default function Overview() {
               <CardTitle className="text-sm font-medium">Total test taken</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">56</div>
+              <div className="text-2xl font-bold">0</div>
               {/* <p className="text-xs text-muted-foreground">+20.1% from last month</p> */}
             </CardContent>
           </Card>
@@ -35,7 +35,7 @@ export default function Overview() {
               <CardTitle className="text-sm font-medium">Test completed</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">36</div>
+              <div className="text-2xl font-bold">0</div>
               {/* <p className="text-xs text-muted-foreground">+20.1% from last month</p> */}
             </CardContent>
           </Card>
@@ -44,7 +44,7 @@ export default function Overview() {
               <CardTitle className="text-sm font-medium">Average test score</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">36</div>
+              <div className="text-2xl font-bold">0</div>
               {/* <p className="text-xs text-muted-foreground">+20.1% from last month</p> */}
             </CardContent>
           </Card>
@@ -53,7 +53,7 @@ export default function Overview() {
               <CardTitle className="text-sm font-medium">Last test score</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">09</div>
+              <div className="text-2xl font-bold">0</div>
               {/* <p className="text-xs text-muted-foreground">+20.1% from last month</p> */}
             </CardContent>
           </Card>
@@ -71,7 +71,9 @@ export default function Overview() {
             <Button>Take Mock Test</Button>
           </Link>
         </div>
-        <Container className="!p-0 !mx-0 !max-w-full grid w-full flex-1">
+
+        <h1 className="text-balance text-center text-lg font-semibold">No data yet</h1>
+        {/*<Container className="!p-0 !mx-0 !max-w-full grid w-full flex-1">
           <Table>
             <TableHeader>
               <TableRow>
@@ -119,46 +121,10 @@ export default function Overview() {
                 <TableCell className="">32%</TableCell>
                 <TableCell className="text-right">2023-06-23</TableCell>
               </TableRow>
-              {/*<TableRow>
-                <TableCell>
-                  <div className="font-medium">Verbal Reasoning test</div>
-                </TableCell>
-                <TableCell className="">73%</TableCell>
-                <TableCell className="">43%</TableCell>
-                <TableCell className="">32%</TableCell>
-                <TableCell className="text-right">2023-06-23</TableCell>
-              </TableRow>*/}
             </TableBody>
           </Table>
-        </Container>
+        </Container>*/}
       </Section>
-      {/*<Section className="!p-0 grid gap-2">
-      //   <div className="flex items-center">
-      //     <h1 className="text-lg font-semibold md:text-xl">Sample questions</h1>
-      //   </div>
-      //   <Container className="!p-0 !mx-0 !max-w-full grid grid-cols-3 gap-2 w-full">
-      //     <Link href="/test/all-mighty-test" passHref>
-      //       <TestCard
-      //         title="All Mighty Test"
-      //         description="Numerical reasoning tests demonstrate your ability to deal with numbers quickly and accurately. These tests contain questions that..."
-      //         testCount={50}
-      //         questionsCount={520}
-      //       />
-      //     </Link>
-      //     <TestCard
-      //       title="All Mighty Test"
-      //       description="Numerical reasoning tests demonstrate your ability to deal with numbers quickly and accurately. These tests contain questions that..."
-      //       testCount={50}
-      //       questionsCount={520}
-      //     />
-      //     <TestCard
-      //       title="All Mighty Test"
-      //       description="Numerical reasoning tests demonstrate your ability to deal with numbers quickly and accurately. These tests contain questions that..."
-      //       testCount={50}
-      //       questionsCount={520}
-      //     />
-      //   </Container>
-      </Section>/* */}
     </Main>
   )
 }
