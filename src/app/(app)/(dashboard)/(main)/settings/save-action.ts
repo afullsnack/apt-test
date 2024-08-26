@@ -1,7 +1,6 @@
 'use server'
 import config from '@payload-config'
 import { getPayload } from 'payload'
-import SMTPConnection from 'nodemailer/lib/smtp-connection'
 import crypto from 'node:crypto'
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
