@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useActionState, useState } from 'react'
 import { Container, Main, Section } from '@/app/(app)/components/craft'
 import { Button } from '@/app/(app)/components/ui/button'
 import { Home } from 'lucide-react'
@@ -18,9 +18,15 @@ import { Input } from '@/app/(app)/components/ui/input'
 import { Separator } from '@/app/(app)/components/ui/separator'
 import { useRouter } from 'next/navigation'
 import logo from '@/app/(app)/assets/logo.png'
+import { getEmailsAndCompareCode } from './action'
+import { useAction } from '../../hooks/useAction'
 
 export default function Code() {
   const { push } = useRouter()
+
+  const [code, setCode] = useState<string>()
+  const { loading, state, execute, error } = useAction(getEmailsAndCompareCode, false)
+  console.log(error, ':::error')
 
   return (
     <Main>
@@ -48,7 +54,14 @@ export default function Code() {
                   <Label htmlFor="email">
                     Access code<small className="text-red-600 font-normal text-sm">*</small>
                   </Label>
-                  <Input id="email" type="email" placeholder="123456" required />
+                  <Input
+                    id="code"
+                    type="text"
+                    placeholder="123456"
+                    required
+                    value={code}
+                    onChange={(e) => setCode(e.target.value)}
+                  />
                 </div>
                 {/* <div className="grid gap-2">
                 <Label htmlFor="password">Password</Label>
@@ -56,13 +69,29 @@ export default function Code() {
               </div> */}
                 <Button
                   type="submit"
+                  disabled={loading}
                   className="w-full"
-                  onClick={() => {
+                  onClick={async () => {
                     // push('/overview')
+
+                    if (code) {
+                      const result = await execute(code)
+                      if (result) {
+                        push('/overview')
+                      }
+                      console.log(result, ':::User data')
+                    } else {
+                      alert('Insert code')
+                    }
                   }}
                 >
-                  Login
+                  {loading ? 'Loading...' : 'Login'}
                 </Button>
+                {error && (
+                  <div className="mt-4 text-center text-sm">
+                    <p>{error.message}</p>
+                  </div>
+                )}
                 <div className="mt-4 text-center text-sm">
                   By continuing, you agree to the{' '}
                   <Link href="#" className="underline">

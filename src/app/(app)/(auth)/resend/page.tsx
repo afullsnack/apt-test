@@ -1,4 +1,5 @@
-import React from 'react'
+'use client'
+import React, { useState } from 'react'
 import { Container, Main, Section } from '@/app/(app)/components/craft'
 import { Button } from '@/app/(app)/components/ui/button'
 import { Home } from 'lucide-react'
@@ -15,8 +16,17 @@ import {
 import { Input } from '@/app/(app)/components/ui/input'
 import { Separator } from '@/app/(app)/components/ui/separator'
 import logo from '@/app/(app)/assets/logo.png'
+import { useAction } from '../../hooks/useAction'
+import { resendCode } from './action'
+import { useRouter } from 'next/navigation'
 
 export default function Resend() {
+  const [email, setEmail] = useState<string>()
+
+  const { error, loading, state, execute } = useAction(resendCode, false)
+
+  const { push } = useRouter()
+
   return (
     <Main>
       <Section className="grid gap-8 grid-cols-1">
@@ -44,15 +54,41 @@ export default function Resend() {
               </div> */}
                 <div className="grid gap-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" placeholder="ruco@email.com" required />
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="ruco@email.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
                 </div>
                 {/* <div className="grid gap-2">
                 <Label htmlFor="password">Password</Label>
                 <Input id="password" type="password" />
               </div> */}
-                <Button type="submit" className="w-full">
-                  Send Code
+                <Button
+                  type="submit"
+                  className="w-full"
+                  onClick={async (e) => {
+                    e.preventDefault()
+
+                    const result = await execute(email)
+                    if (result) {
+                      alert('Access code sent')
+                      push('/code')
+                    } else {
+                      alert('Something went wrong, or your email address is not on the system')
+                    }
+                  }}
+                >
+                  {loading ? 'Sending...' : 'Send Code'}
                 </Button>
+                {error && (
+                  <div className="mt-4 text-center text-sm">
+                    <p>{error.message}</p>
+                  </div>
+                )}
                 <div className="mt-4 text-center text-sm">
                   By continuing, you agree to the{' '}
                   <Link href="#" className="underline">
