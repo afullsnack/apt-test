@@ -52,6 +52,54 @@ class Airtable {
     }
   }
 
+
+  // Get base schema:
+  //> Tables with table model
+  //> Fields with field model
+  //> Views with view model
+  async getAirtableRowCount(tableName: string, baseId?: string) {
+    const BASE_ID = baseId ?? this.baseId
+    this.baseId = BASE_ID;
+    const url = `${this.baseUrl}/${this.baseId}/${tableName}`;
+    let totalRecords = 0;
+    let offset: string | undefined;
+
+    if (BASE_ID) {
+      do {
+        try {
+          const encUrl = encodeURI(`${url}${(offset ? `?offset=${offset}` : '')}`);
+          console.log(encUrl, ":::encoded URL");
+          const response = await fetch(encUrl, {
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+            },
+          })
+
+          if (response.ok) {
+            const json = await response.json()
+            // console.log(json, ':::getting specific base schema')
+
+            totalRecords += json.records.length;
+            offset = json.offset;
+            console.log(totalRecords, ":::current total records");
+          } else {
+            console.log(response.status, response.statusText, ':::error fetching base')
+            throw new Error(response.statusText)
+          }
+
+        } catch (error) {
+          console.error('Error fetching data from Airtable:', error);
+          throw error;
+        }
+      } while (offset);
+
+      return totalRecords;
+    } else {
+      throw new NoBaseIdError('No base ID was found for this Airtable instance')
+    }
+  }
+
+
   // Get records for specific table
   // > path: /{baseId}/{tableIdOrName}
   // > pageSize: 100 - default

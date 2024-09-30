@@ -98,7 +98,7 @@ const DashboardLayout = ({ children }: Args) => {
                   )}
                 >
                   <Calendar className="h-4 w-4" />
-                  Practice Test
+                  Practice Question
                 </Link>
                 <Link
                   href="/test"

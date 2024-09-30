@@ -2,9 +2,8 @@ import { ReactNode } from 'react'
 import { Inter } from 'next/font/google'
 import { ScreenDeviceProvider } from '@app/lib/contexts'
 import './global.css'
-import { Container, Layout, Section } from '@/app/(app)/components/craft'
+import { Layout } from '@/app/(app)/components/craft'
 import { cn } from '@/app/(app)/lib/utils'
-import { Separator } from '@/app/(app)/components/ui/separator'
 
 const inter = Inter({
   subsets: ['latin'],
