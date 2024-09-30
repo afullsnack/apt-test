@@ -8,6 +8,7 @@ import crypto from 'node:crypto'
 import { Airtable, NoBaseIdError } from '@/airtable.config'
 import React from 'react'
 import { Solutions } from '@app/components/test-solutions'
+import { notFound } from 'next/navigation'
 
 export default async function TestPage({ params }: { params: { slug: string[] } }) {
   const [page, test, attemptId, ...props] = params.slug
@@ -69,6 +70,16 @@ export default async function TestPage({ params }: { params: { slug: string[] } 
         }
       }
     }
+  }
+
+
+  // TODO: handle practice page
+  if (page === 'practice') {
+    return (
+      <Main className="flex flex-1 w-full flex-col gap-4">
+        <h1>Pick practice questions</h1>
+      </Main>
+    )
   }
 
   if (page === 'solution') {

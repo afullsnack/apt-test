@@ -88,6 +88,19 @@ const DashboardLayout = ({ children }: Args) => {
                   Overview
                 </Link>
                 <Link
+                  href="/practice"
+                  className={cn(
+                    'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
+                    {
+                      'bg-muted': pathname.includes('test'),
+                      'text-foreground': pathname.includes('test'),
+                    },
+                  )}
+                >
+                  <Calendar className="h-4 w-4" />
+                  Practice Test
+                </Link>
+                <Link
                   href="/test"
                   className={cn(
                     'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',

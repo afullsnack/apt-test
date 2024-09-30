@@ -1,3 +1,5 @@
+// @trigger plunk event to send email template to user
+
 export const triggerEvent = async ({
   email,
   eventName,
