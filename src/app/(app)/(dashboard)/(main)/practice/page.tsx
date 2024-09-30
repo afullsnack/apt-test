@@ -1,26 +1,15 @@
 import { Main, Section, Container } from '@app/components/craft'
-import { TestCard } from '@app/components/ui/test-card'
-import { TestScoreChart } from '@app/components/score-radial-chart'
-import { PerformanceChart } from '@app/components/performance-area-chart'
+// import { TestCard } from '@app/components/ui/test-card'
+// import { TestScoreChart } from '@app/components/score-radial-chart'
+// import { PerformanceChart } from '@app/components/performance-area-chart'
 import { Button } from '@/app/(app)/components/ui/button'
 import Link from 'next/link'
-import { getPayloadHMR } from '@payloadcms/next/utilities'
-import config from '@payload-config'
+// import { getPayloadHMR } from '@payloadcms/next/utilities'
+// import config from '@payload-config'
 import { PracticeCard } from '@/app/(app)/components/ui/practice-card'
 import { Airtable, NoBaseIdError } from '@/airtable.config'
 import { baseIds } from '@/app/(app)/lib/utils'
 import { Suspense } from 'react'
-
-
-const practiceQuestionsSample = [
-  {
-    title: "Verbal Reasoning",
-    description: "Numerical reasoning tests demonstrate your ability to deal with numbers quickly and accurately. These tests contain questions that...",
-    count: 30,
-    href: "/practice/{tableId}/{sessionId}"
-  },
-]
-
 
 const getAllCustomSections = async () => {
   const a = new Airtable({
@@ -57,7 +46,6 @@ const getAllCustomSections = async () => {
 
 async function PracticeQuestions() {
   const tables = await getAllCustomSections();
-  console.log(tables, ":::table inside of custom base");
 
   return (
     <Container className="!p-0 !mx-0 !max-w-full grid grid-cols-3 gap-2 w-full flex-1">
@@ -74,16 +62,12 @@ async function PracticeQuestions() {
         ))
       }
     </Container>
-
   )
 }
 
 export default async function Test() {
   // const payload = await getPayloadHMR({ config })
   // TODO: find all sections and render
-  // TODO: 2 - Load all tables from the custom base
-
-
 
   return (
     <Main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
