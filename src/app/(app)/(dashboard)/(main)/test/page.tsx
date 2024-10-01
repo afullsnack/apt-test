@@ -1,11 +1,11 @@
 import { Main, Section, Container } from '@app/components/craft'
 import { TestCard } from '@app/components/ui/test-card'
-import { TestScoreChart } from '@app/components/score-radial-chart'
-import { PerformanceChart } from '@app/components/performance-area-chart'
+// import { TestScoreChart } from '@app/components/score-radial-chart'
+// import { PerformanceChart } from '@app/components/performance-area-chart'
 import { Button } from '@/app/(app)/components/ui/button'
 import Link from 'next/link'
-import { getPayloadHMR } from '@payloadcms/next/utilities'
-import config from '@payload-config'
+// import { getPayloadHMR } from '@payloadcms/next/utilities'
+// import config from '@payload-config'
 
 export default async function Test() {
   // const payload = await getPayloadHMR({ config })
@@ -16,7 +16,7 @@ export default async function Test() {
       <Section className="!p-0 grid gap-2">
         <div className="flex items-center justify-between">
           <h1 className="text-lg font-semibold md:text-xl">Sample questions</h1>
-          <Link href="/test/mock-test" passHref>
+          <Link href="/test/select-test" passHref>
             <Button>Take Mock Test</Button>
           </Link>
         </div>
