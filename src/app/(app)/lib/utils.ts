@@ -6,25 +6,29 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const baseIds = {
-  nnpcl: 'app9KtovkKWlaiyhU',
   cnc: 'appOaHvsdcbhnqjqm',
+  nnpcl: 'app9KtovkKWlaiyhU',
   custom: 'apptppBpE0rStopjr',
 }
 
 export const testTypes = [
   {
-    name: "Chevron Test",
-    description: "Verbal Reasoning, Abstract Reasoning and Numerical Reasoning. 20 questions each.",
-    baseId: baseIds['cnc']
+    title: 'Chevron Test',
+    name: Object.keys(baseIds)[0],
+    description: 'Verbal Reasoning, Abstract Reasoning and Numerical Reasoning. 20 questions each.',
+    baseId: baseIds['cnc'],
   },
   {
-    name: "NNPCL Test",
-    description: "English/Verbal Reasoning, Mathematics/Quantitative Reasoning, General Knowledge, Current Affairs.",
-    baseId: baseIds['nnpcl']
+    title: 'NNPCL Test',
+    name: Object.keys(baseIds)[1],
+    description:
+      'English/Verbal Reasoning, Mathematics/Quantitative Reasoning, General Knowledge, Current Affairs.',
+    baseId: baseIds['nnpcl'],
   },
   {
-    name: "Custom Test",
-    description: "Select from different sections.",
-    baseId: baseIds['custom']
-  }
+    title: 'Custom Test',
+    name: Object.keys(baseIds)[2],
+    description: 'Select from different sections.',
+    baseId: baseIds['custom'],
+  },
 ]

@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import { Main, Section, Container } from '@app/components/craft'
 import { TestCard } from '@app/components/ui/test-card'
@@ -7,51 +7,68 @@ import { TestCard } from '@app/components/ui/test-card'
 import { Button } from '@/app/(app)/components/ui/button'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@app/components/ui/card'
-import { testTypes } from '@app/lib/utils'
+import { cn, testTypes } from '@app/lib/utils'
 import { ToggleGroup, ToggleGroupItem } from '@app/components/ui/toggle-group'
-import { useState } from 'react';
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 // import { getPayloadHMR } from '@payloadcms/next/utilities'
 // import config from '@payload-config'
-
 
 export default function Test() {
   // const payload = await getPayloadHMR({ config })
   // TODO: find all sections and render
 
+  const [baseId, setBaseId] = useState<string>()
+  const router = useRouter()
 
-  const [test, setTest] = useState<string>();
   return (
     <Main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
       <Section className="!p-0 grid gap-2">
         <div className="flex items-center justify-center">
-          <h1 className="text-lg font-semibold text-center md:text-xl border-b-[3px] border-b-[#1FA1E0] px-8">Select Test</h1>
+          <h1 className="text-lg font-semibold text-center md:text-xl border-b-[3px] border-b-[#1FA1E0] px-8">
+            Select Test
+          </h1>
           {/*<Link href="/test/select-test" passHref>
             <Button>Take Mock Test</Button>
           </Link>*/}
         </div>
-        <Container className="!p-0 grid gap-2 w-full flex-1 !max-w-full">
-          <ToggleGroup type="single" className='grid gap-2 w-full border border-red-400 h-auto' onValueChange={value => setTest(value)}>
-            {
-              testTypes.map((test) => {
-                return (
-                  <ToggleGroupItem value={test.baseId} key={test.baseId} className='h-auto !max-w-full'>
-                    <Card>
-                      <CardContent>
-                        <CardHeader>
-                          <CardTitle>{test.name}</CardTitle>
-                        </CardHeader>
-                        <div>
-                          <span>{test.description}</span>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </ToggleGroupItem>
-                )
-              })
-            }
+        <Container className="!p-0 place-items-center grid gap-4 w-full flex-1 !max-w-full">
+          <ToggleGroup
+            type="single"
+            className="grid w-full gap-3"
+            onValueChange={(value) => setBaseId(value)}
+          >
+            {testTypes.map((test) => {
+              return (
+                <ToggleGroupItem value={test.baseId} key={test.baseId} className="h-auto w-full">
+                  <Card
+                    className={cn('w-full', {
+                      'bg-[#E7F7FF]/40': baseId === test.baseId,
+                    })}
+                  >
+                    <CardContent className="grid w-full items-center justify-start py-6">
+                      <div>
+                        <h1 className="font-semibold text-xl text-left">{test.title}</h1>
+                        <span>{test.description}</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </ToggleGroupItem>
+              )
+            })}
           </ToggleGroup>
 
-          <Button onClick={() => { }}>Start Test</Button>
+          <Button
+            onClick={() => {
+              if (!baseId) {
+                alert('No test type selected!')
+              }
+              router.push(`/test/${testTypes.find((t) => t.baseId === baseId)?.name}/${baseId}`)
+            }}
+            className="max-w-32"
+          >
+            Start Test
+          </Button>
           {/*<Link href={'https://nukleus-gg.gitbook.io/aptitude-test-docs'} passHref>
             <TestCard
               title="Quantitative Reasoning/Mathematics"

@@ -9,28 +9,47 @@ import { Airtable, NoBaseIdError } from '@/airtable.config'
 import React from 'react'
 import { Solutions } from '@app/components/test-solutions'
 import { notFound } from 'next/navigation'
+import { testTypes } from '@/app/(app)/lib/utils'
 
 export default async function TestPage({ params }: { params: { slug: string[] } }) {
-  const [page, test, attemptId, ...props] = params.slug
-  let sections: Array<any> = []
-  let records: Record<string, any>[] = []
+  const [page, test, baseId, attemptId, ...props] = params.slug
+  let sections: Array<{
+    id: string
+    name: string
+    questionCount: number
+    records?: Record<string, any>[]
+  }> = []
   // TODO: call airtable read to fetch all tables from base
-  const a = new Airtable({ token: process.env.AIRTABLE_API_KEY_TEST!, baseId: 'apptppBpE0rStopjr' })
+  const a = new Airtable({
+    token: process.env.AIRTABLE_API_KEY_TEST!,
+    baseId: baseId ?? 'apptppBpE0rStopjr',
+  })
 
   if (page === 'test') {
     // try getting all tables
     try {
-      const base = await a.base('apptppBpE0rStopjr')
+      const base = await a.base(baseId ?? 'apptppBpE0rStopjr')
 
       console.log(base, ':::single base data')
-      sections = base['tables']?.map((table: any) => ({
-        id: table?.id,
-        name: table?.name,
-        questionCount: 30,
-      }))
+      const result = await Promise.allSettled(
+        base['tables']?.map(async (table: any) => ({
+          id: table?.id,
+          name: table?.name,
+          questionCount: await a.getAirtableRowCount(table?.name),
+          records: (await a.listTableRecords(table?.id))?.records,
+        })),
+      )
+      sections = result
+        .map((res) => (res.status === 'fulfilled' ? res.value : undefined))
+        .filter(Boolean)
+      //  sections = base['tables']?.map((table: any) => ({
+      //   id: table?.id,
+      //   name: table?.name,
+      //   questionCount: 30,
+      // }))
     } catch (e: unknown) {
       if (e instanceof NoBaseIdError) {
-        const base = await a.base('apptppBpE0rStopjr')
+        const base = await a.base(baseId ?? 'apptppBpE0rStopjr')
         console.log(base, ':::single base data retry')
         sections = base['tables']?.map((table: any) => ({
           id: table?.id,
@@ -43,50 +62,40 @@ export default async function TestPage({ params }: { params: { slug: string[] } 
       }
     }
 
-    if (sections.length) {
-      try {
-        // pass in section as tableId
-        for (const section of sections) {
-          const table = await a.listTableRecords(section?.id, 'apptppBpE0rStopjr')
-          // @ts-ignore
-          records = [...records, ...table?.records]
-        }
+    // if (sections.length) {
+    //   try {
+    //     // pass in section as tableId
+    //     for (const section of sections) {
+    //       const table = await a.listTableRecords(section?.id)
+    //       // @ts-ignore
+    //       records = [...records, ...table?.records]
+    //     }
 
-        // @ts-ignore
-        console.log(records.length, ':::length of records')
-      } catch (e: unknown) {
-        if (e instanceof NoBaseIdError) {
-          // retry with baseId
-          for (const section of sections) {
-            const table = await a.listTableRecords(section?.id, 'apptppBpE0rStopjr')
-            // @ts-ignore
-            records = [...records, ...table?.records]
-          }
-          // @ts-ignore
-          console.log(records.length, ':::record legnth')
-        } else {
-          console.log(e, ':::error when fetching records')
-          throw e
-        }
-      }
-    }
-  }
-
-
-  // TODO: handle practice page
-  if (page === 'practice') {
-    return (
-      <Main className="flex flex-1 w-full flex-col gap-4">
-        <h1>Pick practice questions</h1>
-      </Main>
-    )
+    //     // @ts-ignore
+    //     console.log(records.length, ':::length of records')
+    //   } catch (e: unknown) {
+    //     if (e instanceof NoBaseIdError) {
+    //       // retry with baseId
+    //       for (const section of sections) {
+    //         // const table = await a.listTableRecords(section?.id)
+    //         // @ts-ignore
+    //         // records = [...records, ...table?.records]
+    //       }
+    //       // @ts-ignore
+    //       console.log(records.length, ':::record legnth')
+    //     } else {
+    //       console.log(e, ':::error when fetching records')
+    //       throw e
+    //     }
+    //   }
+    // }
   }
 
   if (page === 'solution') {
     return (
       <Main className="flex flex-1 w-full flex-col gap-4">
         {/* Finish test component */}
-        {page === 'solution' && test && attemptId && (
+        {page === 'solution' && test && baseId && attemptId && (
           <Solutions
             test={test}
             // sections={sections}
@@ -99,22 +108,24 @@ export default async function TestPage({ params }: { params: { slug: string[] } 
     )
   }
 
+  const selectedTest = testTypes.find((t) => t.name === test)
+
   return (
     <Main className="flex flex-1 w-full flex-col gap-4">
       {/* Header section of test page */}
-      {page === 'test' && test && !attemptId && (
+      {page === 'test' && test && baseId && !attemptId && (
         <Section className="grid gap-2 bg-blue-600/75">
           <div />
         </Section>
       )}
 
       {/* test page entry, setting attemptId and starting test sections */}
-      {page === 'test' && test && !attemptId && (
+      {page === 'test' && test && baseId && !attemptId && (
         <TestEntry
-          title="Mock Test"
+          title={selectedTest?.title ?? ''}
           description="Lorem ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsumipsum"
           sections={sections}
-          totalQuestionCount={120}
+          totalQuestionCount={sections.reduce((p, c) => c.questionCount + p, 0)}
           attempts={2}
           attemptId={crypto.randomUUID()}
         />
@@ -133,12 +144,12 @@ export default async function TestPage({ params }: { params: { slug: string[] } 
       )*/}
 
       {/* Randomize tests presented to user */}
-      {page === 'test' && test && attemptId && (
+      {page === 'test' && test && baseId && attemptId && (
         <Question
           test={test}
           sections={sections}
-          // @ts-ignore
-          records={records}
+          // // @ts-ignore
+          // records={records}
           attemptId={attemptId}
         />
       )}

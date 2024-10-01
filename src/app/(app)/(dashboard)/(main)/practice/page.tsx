@@ -15,52 +15,53 @@ const getAllCustomSections = async () => {
   const a = new Airtable({
     token: process.env.AIRTABLE_API_KEY_TEST!,
     baseId: baseIds.custom,
-  });
+  })
 
   try {
-    const base = await a.base();
+    const base = await a.base()
 
-    console.log(base['tables'][0], ':::single table data');
-    const result = await Promise.allSettled(base['tables']?.map(async (table: any) => ({
-      id: table?.id,
-      title: table?.name,
-      count: (await a.getAirtableRowCount(table?.name)),
-      href: '/'
-    })));
+    console.log(base['tables'][0], ':::single table data')
+    const result = await Promise.allSettled(
+      base['tables']?.map(async (table: any) => ({
+        id: table?.id,
+        title: table?.name,
+        count: await a.getAirtableRowCount(table?.name),
+        href: `/test/custom/apptppBpE0rStopjr/${crypto.randomUUID()}?question=1&finish=false&section=${
+          table?.id
+        }`,
+      })),
+    )
 
-    console.log(typeof result, ":::table type", result);
-    const tables = result.map((res) => res.status === "fulfilled"? res.value : undefined);
-    
-    return tables.filter(Boolean);
+    console.log(typeof result, ':::table type', result)
+    const tables = result.map((res) => (res.status === 'fulfilled' ? res.value : undefined))
+
+    return tables.filter(Boolean)
   } catch (e: unknown) {
     if (e instanceof NoBaseIdError) {
-      throw new Error(`No base with the ID: ${baseIds.custom}`);
+      throw new Error(`No base with the ID: ${baseIds.custom}`)
     } else {
       // Throw for all other errors
       throw e
     }
   }
-
 }
 
-
 async function PracticeQuestions() {
-  const tables = await getAllCustomSections();
+  const tables = await getAllCustomSections()
 
   return (
     <Container className="!p-0 !mx-0 !max-w-full grid grid-cols-3 gap-2 w-full flex-1">
-      {
-        tables.map((sample: {
-          title: string;
-          description?: string;
-          count: number;
-          href: string;
-        }) => (
-          <Link passHref href={sample.href}>
-            <PracticeCard title={sample.title} description={sample.description} questionsCount={sample.count} />
+      {tables.map(
+        (sample: { title: string; description?: string; count: number; href: string }) => (
+          <Link passHref href={sample.href} key={sample.title}>
+            <PracticeCard
+              title={sample.title}
+              description={sample.description}
+              questionsCount={sample.count}
+            />
           </Link>
-        ))
-      }
+        ),
+      )}
     </Container>
   )
 }
@@ -74,17 +75,14 @@ export default async function Test() {
       <Section className="!p-0 grid gap-2">
         <div className="flex items-center justify-between">
           <h1 className="text-lg font-semibold md:text-xl">Practice questions</h1>
-          <Link href="/test/mock-test" passHref>
+          <Link href="/test" passHref>
             <Button>Take Test</Button>
           </Link>
         </div>
-        <Suspense fallback={
-          <span>Loading practice questions...</span>
-        }>
+        <Suspense fallback={<span>Loading practice questions...</span>}>
           <PracticeQuestions />
         </Suspense>
       </Section>
     </Main>
   )
 }
-

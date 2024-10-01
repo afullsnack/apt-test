@@ -22,17 +22,20 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@app/components/ui/carousel'
+import Image from 'next/image'
 import { useQueryState, parseAsInteger, parseAsBoolean } from 'nuqs'
 import { FinishTestDialog } from './finish-dialog'
 
 type Args = {
   test: string
-  sections: Record<string, any>[]
-  records: Record<string, any>[]
+  sections: Array<any>
   attemptId: string
 }
-export const Question = ({ test, sections, records, attemptId }: Args) => {
-  const [answers, setAnswers] = useState<string[]>(new Array<string>(records.length))
+export const Question = ({ test, sections, attemptId }: Args) => {
+  const [answers, setAnswers] = useState<string[]>(
+    new Array<string>(sections.reduce((p, c) => c?.records?.length + p, 0)),
+  )
+  const [allRecords, setAllRecords] = useState<Array<any>>([])
   const [api, setApi] = useState<CarouselApi>()
   const [section, setSection] = useQueryState('section', { defaultValue: sections[0]?.id })
   const [current, setCurrent] = useQueryState('question', parseAsInteger.withDefault(0))
@@ -43,9 +46,15 @@ export const Question = ({ test, sections, records, attemptId }: Args) => {
   const [showScoreDialog, setShowScoreDialog] = useState<boolean>(false)
 
   const pathname = usePathname()
-  // const searchParams = useSearchParams()
 
-  console.log(pathname, ':::pathname')
+  console.log(sections[0]?.records[0], ':::records')
+
+  useEffect(() => {
+    setAllRecords((_prev) => [
+      ..._prev,
+      ...sections.reduce((flat, sec) => flat.concat(sec?.records), []),
+    ])
+  }, [])
 
   useEffect(() => {
     if (!api) {
@@ -68,14 +77,16 @@ export const Question = ({ test, sections, records, attemptId }: Args) => {
       // TODO: trigger dialog toggle and pass in score and solution link
       let correct = 0
       let failed = 0
-      for (const record of records) {
-        if (
-          answers[records.findIndex((value) => value?.id === record?.id)] ===
-          record?.fields['Correct Answer']
-        ) {
-          correct += 1
-        } else {
-          failed += 1
+      for (const section of sections) {
+        for (const record of section?.records) {
+          if (
+            answers[section?.records.findIndex((value: any) => value?.id === record?.id)] ===
+            record?.fields['Correct Answer']
+          ) {
+            correct += 1
+          } else {
+            failed += 1
+          }
         }
       }
 
@@ -106,7 +117,7 @@ export const Question = ({ test, sections, records, attemptId }: Args) => {
           <div className="flex items-center space-x-2">
             <span>
               {/* @ts-ignore */}
-              Question {current} of {records?.length}
+              Question {current} of {allRecords?.length}
             </span>
             <ConfirmCloseDialog>
               <Button variant="outline" size={'sm'}>
@@ -127,11 +138,21 @@ export const Question = ({ test, sections, records, attemptId }: Args) => {
         className="w-full"
       >
         <CarouselContent>
-          {records.map((q, index) => (
+          {allRecords.map((q, index) => (
             <CarouselItem key={index ?? q?.id} className="grid-cols-3 gap-2 grid">
               <Container className="bg-background w-full border col-span-2 border-border dark:bg-foreground flex flex-col p-8 items-center justify-center">
                 <div>
                   <p className="text-xl">{q?.fields['Questions']}</p>
+                  {q?.fields['Images'] && q?.fields['Images']?.length && (
+                    <Image
+                      src={q?.fields['Images'][0]?.url}
+                      width={1220}
+                      height={480}
+                      alt="question media"
+                      // fill
+                      className="object-contain"
+                    />
+                  )}
                 </div>
               </Container>
 
@@ -204,7 +225,9 @@ export const Question = ({ test, sections, records, attemptId }: Args) => {
                         }
                       }}
                     >
-                      {current === 30 || current === 60 || current === 90
+                      {current === sections.find((s) => s?.id === section)?.records.length ||
+                      current === 60 ||
+                      current === 90
                         ? 'Start next section'
                         : 'Next'}
                     </Button>
@@ -220,7 +243,7 @@ export const Question = ({ test, sections, records, attemptId }: Args) => {
                               `answers:${attemptId}`,
                               JSON.stringify({
                                 answers,
-                                records,
+                                records: allRecords,
                                 sections,
                               }),
                             )
