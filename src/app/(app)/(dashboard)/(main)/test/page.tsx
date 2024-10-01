@@ -1,27 +1,58 @@
+"use client";
+
 import { Main, Section, Container } from '@app/components/craft'
 import { TestCard } from '@app/components/ui/test-card'
 // import { TestScoreChart } from '@app/components/score-radial-chart'
 // import { PerformanceChart } from '@app/components/performance-area-chart'
 import { Button } from '@/app/(app)/components/ui/button'
 import Link from 'next/link'
+import { Card, CardContent, CardHeader, CardTitle } from '@app/components/ui/card'
+import { testTypes } from '@app/lib/utils'
+import { ToggleGroup, ToggleGroupItem } from '@app/components/ui/toggle-group'
+import { useState } from 'react';
 // import { getPayloadHMR } from '@payloadcms/next/utilities'
 // import config from '@payload-config'
 
-export default async function Test() {
+
+export default function Test() {
   // const payload = await getPayloadHMR({ config })
   // TODO: find all sections and render
 
+
+  const [test, setTest] = useState<string>();
   return (
     <Main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
       <Section className="!p-0 grid gap-2">
-        <div className="flex items-center justify-between">
-          <h1 className="text-lg font-semibold md:text-xl">Sample questions</h1>
-          <Link href="/test/select-test" passHref>
+        <div className="flex items-center justify-center">
+          <h1 className="text-lg font-semibold text-center md:text-xl border-b-[3px] border-b-[#1FA1E0] px-8">Select Test</h1>
+          {/*<Link href="/test/select-test" passHref>
             <Button>Take Mock Test</Button>
-          </Link>
+          </Link>*/}
         </div>
-        <Container className="!p-0 !mx-0 !max-w-full grid grid-cols-3 gap-2 w-full flex-1">
-          <Link href={'https://nukleus-gg.gitbook.io/aptitude-test-docs'} passHref>
+        <Container className="!p-0 grid gap-2 w-full flex-1 !max-w-full">
+          <ToggleGroup type="single" className='grid gap-2 w-full border border-red-400 h-auto' onValueChange={value => setTest(value)}>
+            {
+              testTypes.map((test) => {
+                return (
+                  <ToggleGroupItem value={test.baseId} key={test.baseId} className='h-auto !max-w-full'>
+                    <Card>
+                      <CardContent>
+                        <CardHeader>
+                          <CardTitle>{test.name}</CardTitle>
+                        </CardHeader>
+                        <div>
+                          <span>{test.description}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </ToggleGroupItem>
+                )
+              })
+            }
+          </ToggleGroup>
+
+          <Button onClick={() => { }}>Start Test</Button>
+          {/*<Link href={'https://nukleus-gg.gitbook.io/aptitude-test-docs'} passHref>
             <TestCard
               title="Quantitative Reasoning/Mathematics"
               description="Quantitative reasoning is the ability to interpret, analyze, and draw conclusions from numerical data and mathematical relationships. It involves applying mathematical concepts and logical thinking to solve real-world problems and make informed decisions based on quantitative information."
@@ -62,7 +93,7 @@ export default async function Test() {
               testCount={50}
               questionsCount={30}
             />
-          </Link>
+          </Link>*/}
         </Container>
       </Section>
     </Main>

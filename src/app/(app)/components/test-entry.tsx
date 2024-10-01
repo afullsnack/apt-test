@@ -1,5 +1,7 @@
 'use client'
 
+// @testTypeEntry select the type of test you want to take in this screen
+
 import { Section, Container } from '@app/components/craft'
 import { FC, useState } from 'react'
 import { Separator } from './ui/separator'
@@ -23,7 +25,7 @@ export const TestEntry: FC<{
   attempts: number
   attemptId: string
 }> = ({ title, description, sections, totalQuestionCount, attempts, attemptId }) => {
-  const [display, setDisplay] = useState<'entry' | 'sections'>('entry')
+  const [display, setDisplay] = useState<'entry' | 'sections'>('sections');
   const { push } = useRouter()
   const pathname = usePathname()
 
