@@ -10,8 +10,23 @@ import React from 'react'
 import { Solutions } from '@app/components/test-solutions'
 import { notFound } from 'next/navigation'
 import { testTypes } from '@/app/(app)/lib/utils'
+import { ArrowLeft } from 'lucide-react'
+import { Button } from '@/app/(app)/components/ui/button'
+import Link from 'next/link'
+import { BackButton } from '@/app/(app)/components/back-button'
 
-export default async function TestPage({ params }: { params: { slug: string[] } }) {
+export default async function TestPage({
+  params,
+  searchParams,
+}: {
+  params: { slug: string[] }
+  searchParams: { section: string; count: string; name: string }
+}) {
+  // const searchParams = useSearchParams()
+  const section = searchParams.section // get section if in the query params
+  const questionCount = searchParams.count
+  const tableName = searchParams.name
+
   const [page, test, baseId, attemptId, ...props] = params.slug
   let sections: Array<{
     id: string
@@ -26,41 +41,87 @@ export default async function TestPage({ params }: { params: { slug: string[] } 
   })
 
   if (page === 'test') {
-    // try getting all tables
-    try {
-      const base = await a.base(baseId ?? 'apptppBpE0rStopjr')
+    if (test === 'custom') {
+      if (section && questionCount) {
+        // TODO: if section is present get only record for specific section
+        try {
+          const table = await a.listTableRecords(section)
+          sections = [
+            {
+              id: section,
+              name: tableName,
+              questionCount: Number(questionCount),
+              records: table?.records,
+            },
+          ]
 
-      console.log(base, ':::single base data')
-      const result = await Promise.allSettled(
-        base['tables']?.map(async (table: any) => ({
-          id: table?.id,
-          name: table?.name,
-          questionCount: await a.getAirtableRowCount(table?.name),
-          records: (await a.listTableRecords(table?.id))?.records,
-        })),
-      )
-      sections = result
-        .map((res) => (res.status === 'fulfilled' ? res.value : undefined))
-        .filter(Boolean)
-      //  sections = base['tables']?.map((table: any) => ({
-      //   id: table?.id,
-      //   name: table?.name,
-      //   questionCount: 30,
-      // }))
-    } catch (e: unknown) {
-      if (e instanceof NoBaseIdError) {
-        const base = await a.base(baseId ?? 'apptppBpE0rStopjr')
-        console.log(base, ':::single base data retry')
-        sections = base['tables']?.map((table: any) => ({
-          id: table?.id,
-          name: table?.name,
-          questionCount: 30,
-        }))
+          console.log(sections, ':::single sections', table, ':::single table')
+          // const base = await a.base(baseId)
+
+          // console.log(base, ':::single base data')
+          // const result = await Promise.allSettled(
+          //   base['tables']?.map(async (table: any) => ({
+          //     id: table?.id,
+          //     name: table?.name,
+          //     questionCount: await a.getAirtableRowCount(table?.name),
+          //     records: (await a.listTableRecords(table?.id))?.records,
+          //   })),
+          // )
+          // sections = result
+          //   .map((res) => (res.status === 'fulfilled' ? res.value : undefined))
+          //   .filter(Boolean)
+        } catch (e: unknown) {
+          if (e instanceof NoBaseIdError) {
+            const base = await a.base(baseId ?? 'apptppBpE0rStopjr')
+            console.log(base, ':::single base data retry')
+            sections = base['tables']?.map((table: any) => ({
+              id: table?.id,
+              name: table?.name,
+              questionCount: 30,
+            }))
+          } else {
+            // Throw for all other errors
+            throw e
+          }
+        }
       } else {
-        // Throw for all other errors
-        throw e
+        try {
+          const base = await a.base(baseId)
+
+          console.log(base, ':::single base data')
+          const result = await Promise.allSettled(
+            base['tables']?.map(async (table: any) => ({
+              id: table?.id,
+              name: table?.name,
+              questionCount: await a.getAirtableRowCount(table?.name),
+              records: (await a.listTableRecords(table?.id))?.records,
+            })),
+          )
+          sections = result
+            .map((res) => (res.status === 'fulfilled' ? res.value : undefined))
+            .filter(Boolean)
+          //  sections = base['tables']?.map((table: any) => ({
+          //   id: table?.id,
+          //   name: table?.name,
+          //   questionCount: 30,
+          // }))
+        } catch (e: unknown) {
+          if (e instanceof NoBaseIdError) {
+            const base = await a.base(baseId ?? 'apptppBpE0rStopjr')
+            console.log(base, ':::single base data retry')
+            sections = base['tables']?.map((table: any) => ({
+              id: table?.id,
+              name: table?.name,
+              questionCount: 30,
+            }))
+          } else {
+            // Throw for all other errors
+            throw e
+          }
+        }
       }
     }
+    // try getting all tables
 
     // if (sections.length) {
     //   try {
@@ -114,19 +175,24 @@ export default async function TestPage({ params }: { params: { slug: string[] } 
     <Main className="flex flex-1 w-full flex-col gap-4">
       {/* Header section of test page */}
       {page === 'test' && test && baseId && !attemptId && (
-        <Section className="grid gap-2 bg-blue-600/75">
-          <div />
+        <Section className="grid gap-2 bg-blue-600/75 place-items-center">
+          <div className="min-w-[620px] flex items-center justify-between">
+            <BackButton />
+
+            <div />
+          </div>
         </Section>
       )}
 
       {/* test page entry, setting attemptId and starting test sections */}
       {page === 'test' && test && baseId && !attemptId && (
         <TestEntry
-          title={selectedTest?.title ?? ''}
+          title={section && questionCount && tableName ? tableName : selectedTest?.title ?? ''}
           description="Lorem ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsum ipsumipsum"
           sections={sections}
           totalQuestionCount={sections.reduce((p, c) => c.questionCount + p, 0)}
           attempts={2}
+          step={section && questionCount && tableName ? 'entry' : 'sections'}
           attemptId={crypto.randomUUID()}
         />
       )}

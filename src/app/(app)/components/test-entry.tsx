@@ -24,8 +24,9 @@ export const TestEntry: FC<{
   totalQuestionCount: number
   attempts: number
   attemptId: string
-}> = ({ title, description, sections, totalQuestionCount, attempts, attemptId }) => {
-  const [display, setDisplay] = useState<'entry' | 'sections'>('sections');
+  step?: 'entry' | 'sections'
+}> = ({ title, description, sections, totalQuestionCount, attempts, attemptId, step }) => {
+  const [display, setDisplay] = useState<'entry' | 'sections'>(step ?? 'sections')
   const { push } = useRouter()
   const pathname = usePathname()
 
@@ -36,8 +37,8 @@ export const TestEntry: FC<{
         <Separator className="bg-[#1FA1E0] my-1" />
         <div className="flex justify-center gap-6 w-full px-8 items-center">
           <span className="text-sm font-normal">
-            <b>{sections.length}</b> Section(s) | <b>{totalQuestionCount}</b> Questions | <b>120</b>{' '}
-            Minutes
+            <b>{sections.length}</b> Section(s) | <b>{totalQuestionCount}</b> Questions |{' '}
+            <b>{totalQuestionCount}</b> Minutes
           </span>
 
           {/*<div className="space-x-2 flex">

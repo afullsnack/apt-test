@@ -25,10 +25,11 @@ const getAllCustomSections = async () => {
       base['tables']?.map(async (table: any) => ({
         id: table?.id,
         title: table?.name,
-        count: await a.getAirtableRowCount(table?.name),
-        href: `/test/custom/apptppBpE0rStopjr/${crypto.randomUUID()}?question=1&finish=false&section=${
+        count: 30, // await a.getAirtableRowCount(table?.name),
+        // NOTE: cos attemptId is set, route goes straight to taking test
+        href: `/test/custom/${baseIds.custom ?? 'apptppBpE0rStopjr'}?section=${
           table?.id
-        }`,
+        }&count=${30}&name=${table?.name}`,
       })),
     )
 
