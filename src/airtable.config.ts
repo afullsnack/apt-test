@@ -52,23 +52,23 @@ class Airtable {
     }
   }
 
-
-  // Get base schema:
-  //> Tables with table model
-  //> Fields with field model
-  //> Views with view model
+  // Get records count specific table
+  // > path: /{baseId}/{tableIdOrName}
+  // > pageSize: 100 - default
+  // > offset: if more records after {pageSize} response will contain {offset}
+  // > records: array of objects
   async getAirtableRowCount(tableName: string, baseId?: string) {
     const BASE_ID = baseId ?? this.baseId
-    this.baseId = BASE_ID;
-    const url = `${this.baseUrl}/${this.baseId}/${tableName}`;
-    let totalRecords = 0;
-    let offset: string | undefined;
+    this.baseId = BASE_ID
+    const url = `${this.baseUrl}/${this.baseId}/${tableName}`
+    let totalRecords = 0
+    let offset: string | undefined
 
     if (BASE_ID) {
       do {
         try {
-          const encUrl = encodeURI(`${url}${(offset ? `?offset=${offset}` : '')}`);
-          console.log(encUrl, ":::encoded URL");
+          const encUrl = encodeURI(`${url}${offset ? `?offset=${offset}` : ''}`)
+          console.log(encUrl, ':::encoded URL')
           const response = await fetch(encUrl, {
             headers: {
               Authorization: `Bearer ${this.token}`,
@@ -79,26 +79,24 @@ class Airtable {
             const json = await response.json()
             // console.log(json, ':::getting specific base schema')
 
-            totalRecords += json.records.length;
-            offset = json.offset;
-            console.log(totalRecords, ":::current total records");
+            totalRecords += json.records.length
+            offset = json.offset
+            console.log(totalRecords, ':::current total records')
           } else {
             console.log(response.status, response.statusText, ':::error fetching base')
             throw new Error(response.statusText)
           }
-
         } catch (error) {
-          console.error('Error fetching data from Airtable:', error);
-          throw error;
+          console.error('Error fetching data from Airtable:', error)
+          throw error
         }
-      } while (offset);
+      } while (offset)
 
-      return totalRecords;
+      return totalRecords
     } else {
       throw new NoBaseIdError('No base ID was found for this Airtable instance')
     }
   }
-
 
   // Get records for specific table
   // > path: /{baseId}/{tableIdOrName}
