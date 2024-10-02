@@ -194,6 +194,7 @@ export default async function TestPage({
           attempts={2}
           step={section && questionCount && tableName ? 'entry' : 'sections'}
           attemptId={crypto.randomUUID()}
+          quickStart={section && questionCount && tableName ? true : false}
         />
       )}
       {/* section page entry should never come up when question is present */}

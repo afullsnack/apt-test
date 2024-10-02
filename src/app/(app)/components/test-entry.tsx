@@ -25,7 +25,17 @@ export const TestEntry: FC<{
   attempts: number
   attemptId: string
   step?: 'entry' | 'sections'
-}> = ({ title, description, sections, totalQuestionCount, attempts, attemptId, step }) => {
+  quickStart?: boolean
+}> = ({
+  title,
+  description,
+  sections,
+  totalQuestionCount,
+  attempts,
+  attemptId,
+  step,
+  quickStart,
+}) => {
   const [display, setDisplay] = useState<'entry' | 'sections'>(step ?? 'sections')
   const { push } = useRouter()
   const pathname = usePathname()
@@ -66,8 +76,17 @@ export const TestEntry: FC<{
                 ))}
               </ul>
             </div>
-            <Button onClick={() => setDisplay('sections')} className="max-w-lg">
-              Continue
+            <Button
+              onClick={() => {
+                if (!quickStart) {
+                  setDisplay('sections')
+                } else {
+                  push(`${pathname}/${attemptId}`)
+                }
+              }}
+              className="max-w-lg"
+            >
+              {!quickStart ? 'Continue' : 'Start Section'}
             </Button>
           </Container>
         )}
