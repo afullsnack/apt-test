@@ -103,15 +103,18 @@ class Airtable {
   // > pageSize: 100 - default
   // > offset: if more records after {pageSize} response will contain {offset}
   // > records: [object of row]
-  async listTableRecords(tableId: string, baseId?: string) {
+  async listTableRecords(tableId: string, recordCount: number = 30, baseId?: string) {
     const BASE_ID = this.baseId ?? baseId
     if (BASE_ID) {
-      const response = await fetch(`${this.baseUrl}/${BASE_ID}/${tableId}?maxRecords=30`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${this.token}`,
+      const response = await fetch(
+        `${this.baseUrl}/${BASE_ID}/${tableId}?maxRecords=${recordCount}`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
         },
-      })
+      )
 
       if (response.ok) {
         const json = await response.json()

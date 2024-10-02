@@ -120,6 +120,56 @@ export default async function TestPage({
           }
         }
       }
+    } else if (test === 'cnc') {
+      try {
+        const base = await a.base(baseId)
+
+        console.log(base, ':::single base data')
+        const result = await Promise.allSettled(
+          base['tables']?.map(async (table: any) => ({
+            id: table?.id,
+            name: table?.name,
+            questionCount: 20,
+            records: (await a.listTableRecords(table?.id, 20))?.records,
+          })),
+        )
+        sections = result
+          .map((res) => (res.status === 'fulfilled' ? res.value : undefined))
+          .filter(Boolean)
+        //  sections = base['tables']?.map((table: any) => ({
+        //   id: table?.id,
+        //   name: table?.name,
+        //   questionCount: 30,
+        // }))
+      } catch (e: unknown) {
+        // Throw for all other errors
+        throw e
+      }
+    } else {
+      try {
+        const base = await a.base(baseId)
+
+        console.log(base, ':::single base data')
+        const result = await Promise.allSettled(
+          base['tables']?.map(async (table: any) => ({
+            id: table?.id,
+            name: table?.name,
+            questionCount: 30,
+            records: (await a.listTableRecords(table?.id, 30))?.records,
+          })),
+        )
+        sections = result
+          .map((res) => (res.status === 'fulfilled' ? res.value : undefined))
+          .filter(Boolean)
+        //  sections = base['tables']?.map((table: any) => ({
+        //   id: table?.id,
+        //   name: table?.name,
+        //   questionCount: 30,
+        // }))
+      } catch (e: unknown) {
+        // Throw for all other errors
+        throw e
+      }
     }
     // try getting all tables
 
