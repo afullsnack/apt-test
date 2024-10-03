@@ -124,7 +124,6 @@ export default async function TestPage({
       try {
         const base = await a.base(baseId)
 
-        console.log(base, ':::single base data')
         const result = await Promise.allSettled(
           base['tables']?.map(async (table: any) => ({
             id: table?.id,
@@ -136,11 +135,6 @@ export default async function TestPage({
         sections = result
           .map((res) => (res.status === 'fulfilled' ? res.value : undefined))
           .filter(Boolean)
-        //  sections = base['tables']?.map((table: any) => ({
-        //   id: table?.id,
-        //   name: table?.name,
-        //   questionCount: 30,
-        // }))
       } catch (e: unknown) {
         // Throw for all other errors
         throw e
@@ -149,7 +143,6 @@ export default async function TestPage({
       try {
         const base = await a.base(baseId)
 
-        console.log(base, ':::single base data')
         const result = await Promise.allSettled(
           base['tables']?.map(async (table: any) => ({
             id: table?.id,
@@ -161,45 +154,11 @@ export default async function TestPage({
         sections = result
           .map((res) => (res.status === 'fulfilled' ? res.value : undefined))
           .filter(Boolean)
-        //  sections = base['tables']?.map((table: any) => ({
-        //   id: table?.id,
-        //   name: table?.name,
-        //   questionCount: 30,
-        // }))
       } catch (e: unknown) {
         // Throw for all other errors
         throw e
       }
     }
-    // try getting all tables
-
-    // if (sections.length) {
-    //   try {
-    //     // pass in section as tableId
-    //     for (const section of sections) {
-    //       const table = await a.listTableRecords(section?.id)
-    //       // @ts-ignore
-    //       records = [...records, ...table?.records]
-    //     }
-
-    //     // @ts-ignore
-    //     console.log(records.length, ':::length of records')
-    //   } catch (e: unknown) {
-    //     if (e instanceof NoBaseIdError) {
-    //       // retry with baseId
-    //       for (const section of sections) {
-    //         // const table = await a.listTableRecords(section?.id)
-    //         // @ts-ignore
-    //         // records = [...records, ...table?.records]
-    //       }
-    //       // @ts-ignore
-    //       console.log(records.length, ':::record legnth')
-    //     } else {
-    //       console.log(e, ':::error when fetching records')
-    //       throw e
-    //     }
-    //   }
-    // }
   }
 
   if (page === 'solution') {
@@ -268,6 +227,7 @@ export default async function TestPage({
           // // @ts-ignore
           // records={records}
           attemptId={attemptId}
+          testDurationInMinutes={sections.reduce((p, c) => c.questionCount + p, 0) ?? 120}
         />
       )}
     </Main>

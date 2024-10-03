@@ -67,7 +67,7 @@ export default function Overview() {
       <Section className="!p-0 grid gap-2">
         <div className="flex items-center justify-between">
           <h1 className="text-lg font-semibold md:text-xl">Recent activity</h1>
-          <Link href={'/test/mock-test'} passHref>
+          <Link href={'/test'} passHref>
             <Button>Take Mock Test</Button>
           </Link>
         </div>
