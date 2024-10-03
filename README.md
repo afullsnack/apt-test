@@ -58,3 +58,8 @@ If you have any issues or questions, reach out to us on [Discord](https://discor
     - Send code
     - Account details change/update
 - [ ] Authorize access code
+
+### Editing this to create a PR to build this app
+- [ ] Pull changes
+- [ ] Make random small changes
+- [ ] Make PR and merge
