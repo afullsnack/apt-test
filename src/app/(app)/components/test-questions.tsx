@@ -30,10 +30,11 @@ type Args = {
   test: string
   sections: Array<any>
   attemptId: string
+  testDurationInMinutes?: number
 }
-export const Question = ({ test, sections, attemptId }: Args) => {
+export const Question = ({ test, sections, attemptId, testDurationInMinutes }: Args) => {
   const [answers, setAnswers] = useState<string[]>(
-    new Array<string>(sections.reduce((p, c) => c?.records?.length + p, 0)),
+    new Array<string>(sections.reduce((p, c) => c.questionCount + p, 0)),
   )
   const [allRecords, setAllRecords] = useState<Array<any>>([])
   const [api, setApi] = useState<CarouselApi>()
@@ -50,10 +51,10 @@ export const Question = ({ test, sections, attemptId }: Args) => {
   console.log(sections[0]?.records[0], ':::records')
 
   useEffect(() => {
-    setAllRecords((_prev) => [
-      ..._prev,
-      ...sections.reduce((flat, sec) => flat.concat(sec?.records), []),
-    ])
+    for (const section of sections) {
+      const questions = section?.record?.splice(0, 30)
+      setAllRecords((_prev) => [..._prev, ...questions])
+    }
   }, [])
 
   useEffect(() => {
@@ -109,7 +110,7 @@ export const Question = ({ test, sections, attemptId }: Args) => {
 
         <>
           <CountdownTimer
-            minutes={120}
+            minutes={testDurationInMinutes ?? 120}
             onFinish={() => {
               setFinish(true)
             }}
