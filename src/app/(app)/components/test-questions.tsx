@@ -52,7 +52,8 @@ export const Question = ({ test, sections, attemptId, testDurationInMinutes }: A
 
   useEffect(() => {
     for (const section of sections) {
-      const questions = section?.record?.splice(0, 30)
+      const questions = section?.records?.splice(0, 30)
+      console.log(questions, ':::questions')
       setAllRecords((_prev) => [..._prev, ...questions])
     }
   }, [])
@@ -143,17 +144,18 @@ export const Question = ({ test, sections, attemptId, testDurationInMinutes }: A
             <CarouselItem key={index ?? q?.id} className="grid-cols-3 gap-2 grid">
               <Container className="bg-background w-full border col-span-2 border-border dark:bg-foreground flex flex-col p-8 items-center justify-center">
                 <div>
-                  <p className="text-xl">{q?.fields['Questions']}</p>
-                  {q?.fields['Images'] && q?.fields['Images']?.length && (
-                    <Image
-                      src={q?.fields['Images'][0]?.url}
-                      width={1220}
-                      height={480}
-                      alt="question media"
-                      // fill
-                      className="object-contain"
-                    />
-                  )}
+                  <p className="text-xl mb-6">{q?.fields['Questions']}</p>
+                  {(q?.fields['Images'] && q?.fields['Images']?.length) ||
+                    (q?.fields['Image'] && q?.fields['Image']?.length && (
+                      <Image
+                        src={(q?.fields['Images'] ?? q?.fields['Image'])[0]?.url}
+                        width={1220}
+                        height={480}
+                        alt="question media"
+                        // fill
+                        className="object-contain"
+                      />
+                    ))}
                 </div>
               </Container>
 
