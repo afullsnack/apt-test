@@ -41,7 +41,7 @@ class Airtable {
 
       if (response.ok) {
         const json = await response.json()
-        console.log(json, ':::getting specific base schema')
+        // console.log(json, ':::getting specific base schema')
         return json
       } else {
         console.log(response.status, response.statusText, ':::error fetching base')
