@@ -48,11 +48,13 @@ export const Question = ({ test, sections, attemptId, testDurationInMinutes }: A
 
   const pathname = usePathname()
 
-  console.log(sections[0]?.records[0], ':::records')
+  console.log(allRecords[current - 1], ':::current records')
 
   useEffect(() => {
     for (const section of sections) {
-      const questions = section?.records?.splice(0, 30)
+      const questions = section?.records
+        ?.splice(0, 30)
+        .map((rec: Record<string, any>) => ({ sectionId: section?.id, ...rec }))
       console.log(questions, ':::questions')
       setAllRecords((_prev) => [..._prev, ...questions])
     }
@@ -145,17 +147,16 @@ export const Question = ({ test, sections, attemptId, testDurationInMinutes }: A
               <Container className="bg-background w-full border col-span-2 border-border dark:bg-foreground flex flex-col p-8 items-center justify-center">
                 <div>
                   <p className="text-xl mb-6">{q?.fields['Questions']}</p>
-                  {(q?.fields['Images'] && q?.fields['Images']?.length) ||
-                    (q?.fields['Image'] && q?.fields['Image']?.length && (
-                      <Image
-                        src={(q?.fields['Images'] ?? q?.fields['Image'])[0]?.url}
-                        width={1220}
-                        height={480}
-                        alt="question media"
-                        // fill
-                        className="object-contain"
-                      />
-                    ))}
+                  {q?.fields['Image'] && !!q?.fields['Image']?.length && (
+                    <Image
+                      src={q?.fields['Image'][0]?.url}
+                      width={1220}
+                      height={480}
+                      alt="question media"
+                      // fill
+                      className="object-contain"
+                    />
+                  )}
                 </div>
               </Container>
 
@@ -201,8 +202,9 @@ export const Question = ({ test, sections, attemptId, testDurationInMinutes }: A
                   {api?.canScrollPrev() && (
                     <Button
                       onClick={() => {
-                        setCurrent(current! - 1)
+                        setCurrent(api.selectedScrollSnap() - 1)
                         api.scrollPrev()
+                        setSection(allRecords[api.selectedScrollSnap() - 1]?.sectionId)
                         // if (typeof answers[current] !== 'undefined') {
                         // }
                       }}
@@ -215,22 +217,16 @@ export const Question = ({ test, sections, attemptId, testDurationInMinutes }: A
                       onClick={() => {
                         if (typeof answers[current - 1] !== 'undefined') {
                           setCurrent(api.selectedScrollSnap() + 1)
+                          setSection(allRecords[api.selectedScrollSnap() + 1]?.sectionId)
                           api.scrollNext()
-
-                          if (current === 30 || current === 60 || current === 90) {
-                            setSection(
-                              sections[sections.findIndex((value) => value?.id === section) + 1]
-                                ?.id,
-                            )
-                          }
                         } else {
                           alert('Pick an option to continue')
                         }
                       }}
                     >
-                      {current === sections.find((s) => s?.id === section)?.records.length ||
-                      current === 60 ||
-                      current === 90
+                      {current !== allRecords?.length &&
+                      allRecords[api.selectedScrollSnap()]?.sectionId !==
+                        allRecords[api.selectedScrollSnap() + 1]?.sectionId
                         ? 'Start next section'
                         : 'Next'}
                     </Button>
