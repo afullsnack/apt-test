@@ -161,18 +161,26 @@ export default async function TestPage({
     }
   }
 
-  if (page === 'solution') {
+  if (page === 'solution' && test && baseId && attemptId) {
     return (
       <Main className="flex flex-1 w-full flex-col gap-4">
         {/* Finish test component */}
         {page === 'solution' && test && baseId && attemptId && (
-          <Solutions
-            test={test}
-            // sections={sections}
+          <Question
+            test={test as 'cnc' | 'custom' | 'nnpcl'}
+            type="solution"
+            sections={sections}
             // // @ts-ignore
             // records={records}
             attemptId={attemptId}
           />
+          // <Solutions
+          //   test={test}
+          //   // sections={sections}
+          //   // // @ts-ignore
+          //   // records={records}
+          //   attemptId={attemptId}
+          // />
         )}
       </Main>
     )
@@ -222,7 +230,8 @@ export default async function TestPage({
       {/* Randomize tests presented to user */}
       {page === 'test' && test && baseId && attemptId && (
         <Question
-          test={test}
+          test={test as 'cnc' | 'custom' | 'nnpcl'}
+          type="question"
           sections={sections}
           // // @ts-ignore
           // records={records}

@@ -1,6 +1,6 @@
 /**
- * Test questions client component
- * params: test, sections, recrods, attemptId
+ * Test questions and solutions client component
+ * params: test, type, sections, records, attemptId, testDurationMinutes
  */
 'use client'
 
@@ -25,14 +25,17 @@ import {
 import Image from 'next/image'
 import { useQueryState, parseAsInteger, parseAsBoolean } from 'nuqs'
 import { FinishTestDialog } from './finish-dialog'
+import { baseIds, cn } from '../lib/utils'
+import Link from 'next/link'
 
 type Args = {
-  test: string
+  test: 'cnc' | 'custom' | 'nnpcl' // TODO: might remove, if not used
+  type: 'solution' | 'question'
   sections: Array<any>
   attemptId: string
   testDurationInMinutes?: number
 }
-export const Question = ({ test, sections, attemptId, testDurationInMinutes }: Args) => {
+export const Question = ({ test, type, sections, attemptId, testDurationInMinutes }: Args) => {
   const [answers, setAnswers] = useState<string[]>(
     new Array<string>(sections.reduce((p, c) => c.questionCount + p, 0)),
   )
@@ -40,22 +43,27 @@ export const Question = ({ test, sections, attemptId, testDurationInMinutes }: A
   const [api, setApi] = useState<CarouselApi>()
   const [section, setSection] = useQueryState('section', { defaultValue: sections[0]?.id })
   const [current, setCurrent] = useQueryState('question', parseAsInteger.withDefault(0))
-  const [finish, setFinish] = useQueryState('finish', parseAsBoolean.withDefault(false))
+  const [finish, setFinish] = useQueryState(
+    'finish',
+    parseAsBoolean.withDefault(type === 'question' ? false : true),
+  )
   const [count, setCount] = useState(0)
 
   const [score, setScore] = useState(0)
   const [showScoreDialog, setShowScoreDialog] = useState<boolean>(false)
 
-  const pathname = usePathname()
+  // NOTE: solution state
+  const [solutionSections, setSolutionSections] = useState<Array<any>>([])
+  // const [solutionRecords, setSolutionRecords] = useState<Array<any>>([]);
 
-  console.log(allRecords[current - 1], ':::current records')
+  console.log(allRecords[current - 1], ':::current records') // should be the only log
 
+  // NOTE: flatten sections records into single questions list
   useEffect(() => {
     for (const section of sections) {
       const questions = section?.records
-        ?.splice(0, 30)
+        ?.splice(0, section?.questionCount)
         .map((rec: Record<string, any>) => ({ sectionId: section?.id, ...rec }))
-      console.log(questions, ':::questions')
       setAllRecords((_prev) => [..._prev, ...questions])
     }
   }, [])
@@ -76,48 +84,73 @@ export const Question = ({ test, sections, attemptId, testDurationInMinutes }: A
   }, [api])
 
   useEffect(() => {
-    if (finish) {
+    if (finish && type === 'question') {
       // TODO: compute total score
       // TODO: trigger dialog toggle and pass in score and solution link
       let correct = 0
       let failed = 0
-      for (const section of sections) {
-        for (const record of section?.records) {
-          if (
-            answers[section?.records.findIndex((value: any) => value?.id === record?.id)] ===
-            record?.fields['Correct Answer']
-          ) {
-            correct += 1
-          } else {
-            failed += 1
-          }
+
+      for (const record of allRecords) {
+        if (
+          answers[allRecords.findIndex((value: any) => value?.id === record?.id)] ===
+          record?.fields['Correct Answer']
+        ) {
+          correct += 1
+        } else {
+          failed += 1
         }
       }
 
       setScore(Math.floor((correct / 120) * 100))
       setShowScoreDialog(true)
+    } else if (finish && type === 'solution') {
+      // TODO: get localStorage and display decode answers
+      if (typeof window !== 'undefined') {
+        const localAnswers = localStorage.getItem(`answers:${attemptId}`)
+        if (localAnswers) {
+          const answerObj = JSON.parse(localAnswers) satisfies {
+            answers: any[]
+            records: any[]
+            sections: any[]
+          }
+          setAnswers(answerObj?.answers)
+          setSolutionSections(answerObj?.sections)
+          setSection(section ?? answerObj?.sections[0]?.id)
+          setAllRecords(answerObj?.records)
+
+          // console.log(answerObj?.sections[0]?.id, ':::section')
+        } else {
+          alert(
+            'The answers for this attempt is not found, kindly take a new test to see the solutons',
+          )
+        }
+      }
     }
-  }, [finish])
+  }, [finish, type])
 
   return (
     <Section className="max-w-screen px-8">
       <FinishTestDialog
         scorePercent={score}
         open={showScoreDialog}
-        solutionLink={`/solution/mock-test/${attemptId}`}
+        solutionLink={`/solution/${test}/${baseIds[test]}/${attemptId}`}
       />
       <Section className="!p-8 w-full border border-blue-300 flex items-center justify-between">
         <h1 className="text-3xl font-semibold capitalize">
-          {sections.find((value) => value?.id === section)?.name}
+          {type === 'question'
+            ? sections.find((value) => value?.id === section)?.name
+            : solutionSections.find((value) => value?.id === section)?.name}
         </h1>
 
         <>
-          <CountdownTimer
-            minutes={testDurationInMinutes ?? 120}
-            onFinish={() => {
-              setFinish(true)
-            }}
-          />
+          {type === 'question' && (
+            <CountdownTimer
+              minutes={testDurationInMinutes ?? 120}
+              onFinish={() => {
+                setFinish(true)
+              }}
+            />
+          )}
           <div className="flex items-center space-x-2">
             <span>
               {/* @ts-ignore */}
@@ -169,32 +202,52 @@ export const Question = ({ test, sections, attemptId, testDurationInMinutes }: A
                 {
                   <>
                     <RadioGroup
-                      defaultValue={answers[current - 1]}
+                      defaultValue={answers[current - 1]?.trim()}
+                      value={answers[current - 1]}
                       onValueChange={(value) =>
                         setAnswers((_prev) => {
                           _prev[current - 1] = value
                           return _prev
                         })
                       }
+                      disabled={type === 'solution'}
                       className="p-4 rounded-sm"
                     >
                       {Object.entries(q.fields)
                         .filter(([field, _]) => field.toLowerCase().includes('option'))
                         .sort(([aField, aValue], [bField, bValue]) => aField.localeCompare(bField))
-                        .map(([field, value], index) => (
-                          <div
-                            key={index}
-                            className="flex items-center border border-muted-foreground/45 p-2 rounded-md justify-between gap-4"
-                          >
-                            <div className="items-center justify-start space-x-2">
-                              <RadioGroupItem value={value as string} id={field} />
-                              <Label htmlFor={field} className="text-left items-center font-bold">
-                                {field}: {value as string}
-                              </Label>
+                        .map(([field, value], index) => {
+                          return (
+                            <div
+                              key={index}
+                              className={cn(
+                                'flex items-center border border-muted-foreground/45 p-2 rounded-md justify-between gap-4',
+                                type === 'solution' && {
+                                  'bg-green-500 text-black':
+                                    (value as string).toLowerCase() ===
+                                    q.fields['Correct Answer'].toLowerCase(),
+                                  'bg-red-500 text-black':
+                                    answers[current - 1].toLowerCase() !==
+                                      q.fields['Correct Answer'].toLowerCase() &&
+                                    (value as string).toLowerCase() ===
+                                      answers[current - 1].toLowerCase(),
+                                },
+                              )}
+                            >
+                              <div className="items-center justify-start space-x-2">
+                                <RadioGroupItem
+                                  disabled={type === 'solution'}
+                                  value={value as string}
+                                  id={field}
+                                />
+                                <Label htmlFor={field} className="text-left items-center font-bold">
+                                  {field}: {value as string}
+                                </Label>
+                              </div>
+                              {/* <span className="text-xs font-bold">{section.questionCount} questions</span> */}
                             </div>
-                            {/* <span className="text-xs font-bold">{section.questionCount} questions</span> */}
-                          </div>
-                        ))}
+                          )
+                        })}
                     </RadioGroup>
                   </>
                 }
@@ -231,34 +284,46 @@ export const Question = ({ test, sections, attemptId, testDurationInMinutes }: A
                         : 'Next'}
                     </Button>
                   )}
-                  {!api?.canScrollNext() && (
-                    <ConfirmSubmitDialog
-                      onConfirm={() => {
-                        // TODO: call payload to store attempt to DB
-                        if (typeof answers[current - 1] !== 'undefined') {
-                          // TODO: store answers array to localStorage for solution
-                          if (typeof window !== 'undefined') {
-                            localStorage.setItem(
-                              `answers:${attemptId}`,
-                              JSON.stringify({
-                                answers,
-                                records: allRecords,
-                                sections,
-                              }),
-                            )
-                          }
+                  {!api?.canScrollNext() &&
+                    (type === 'question' ? (
+                      <ConfirmSubmitDialog
+                        onConfirm={() => {
+                          // TODO: call payload to store attempt to DB
+                          if (typeof answers[current - 1] !== 'undefined') {
+                            // TODO: store answers array to localStorage for solution
+                            if (typeof window !== 'undefined') {
+                              localStorage.setItem(
+                                `answers:${attemptId}`,
+                                JSON.stringify({
+                                  answers,
+                                  records: allRecords,
+                                  sections,
+                                }),
+                              )
+                            }
 
-                          setFinish(true)
-                        } else {
-                          alert('Pick an option to continue')
-                          // setCurrent(api.selectedScrollSnap() + 1)
-                        }
-                      }}
-                    >
-                      <Button>Finish</Button>
-                    </ConfirmSubmitDialog>
-                  )}
+                            setFinish(true)
+                          } else {
+                            alert('Pick an option to continue')
+                            // setCurrent(api.selectedScrollSnap() + 1)
+                          }
+                        }}
+                      >
+                        <Button>Finish</Button>
+                      </ConfirmSubmitDialog>
+                    ) : (
+                      <Link href={'/overview'} passHref>
+                        <Button>Dashboard</Button>
+                      </Link>
+                    ))}
                 </div>
+
+                {/* NOTE: Explanation text goes here in solution type */}
+                {type === 'solution' && q.fields['Explanation'] && (
+                  <div className="flex flex-col w-full border border-primary p-2">
+                    <p className="text-lg font-normal">{q.fields['Explanation']}</p>
+                  </div>
+                )}
               </Container>
             </CarouselItem>
           ))}

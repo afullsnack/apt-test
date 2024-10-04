@@ -39,7 +39,7 @@ export const FinishTestDialog = ({ scorePercent, solutionLink, open = false }: A
               You’re on your way. but we suggest you keep practicing. Our dashboard analytic allows
               you to keep track of your scores.
             </p>
-            <Link href={'/test/mock-test'} passHref className="w-full grid">
+            <Link href={'/test'} passHref className="w-full grid">
               <Button>Take Another Test</Button>
             </Link>
 
