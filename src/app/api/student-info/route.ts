@@ -6,6 +6,11 @@ import { headers } from "next/headers";
 import config from "@payload-config";
 import { getPayload } from "payload";
 
+
+export const OPTIONS = async (request:NextRequest) => {
+  return new NextResponse('', { status: 200 });
+}
+
 export async function GET(request: NextRequest) {
   const apiKey = headers().get('x-api-key');
 
@@ -18,7 +23,7 @@ export async function GET(request: NextRequest) {
       message: "Invalid API KEY provided"
     }, {
       headers: {
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': 'https://rocu-admin.vercel.app',
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-api-key',
       }
@@ -35,7 +40,7 @@ export async function GET(request: NextRequest) {
       message: "Incomplete params supplied to URL"
     }, {
       headers: {
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': 'https://rocu-admin.vercel.app',
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-api-key',
       }
@@ -62,7 +67,7 @@ export async function GET(request: NextRequest) {
         message: "Student not found!"
       }, {
         status: 404, headers: {
-          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Origin': 'https://rocu-admin.vercel.app',
           'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
           'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-api-key',
         }
@@ -79,7 +84,7 @@ export async function GET(request: NextRequest) {
       }
     }, {
       headers: {
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': 'https://rocu-admin.vercel.app',
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-api-key',
       }
@@ -92,7 +97,7 @@ export async function GET(request: NextRequest) {
       message: "An error occured while fetching student data"
     }, {
       status: 500, headers: {
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': 'https://rocu-admin.vercel.app',
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-api-key',
       }
