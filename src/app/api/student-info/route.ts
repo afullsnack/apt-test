@@ -73,7 +73,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       status: false,
       message: "Student data found",
-      data: userData.docs
+      data: {
+        name: userData.docs[0]['full-name'],
+        email: userData.docs[0]?.email
+      }
     }, {
       headers: {
         'Access-Control-Allow-Origin': '*',
