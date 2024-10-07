@@ -16,6 +16,12 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       status: false,
       message: "Invalid API KEY provided"
+    }, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-api-key',
+      }
     });
   }
 
@@ -27,6 +33,12 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       status: false,
       message: "Incomplete params supplied to URL"
+    }, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-api-key',
+      }
     });
   }
 
@@ -48,7 +60,13 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({
         status: false,
         message: "Student not found!"
-      }, { status: 404 })
+      }, {
+        status: 404, headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-api-key',
+        }
+      })
     }
 
     // return data
@@ -56,6 +74,12 @@ export async function GET(request: NextRequest) {
       status: false,
       message: "Student data found",
       data: userData.docs
+    }, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-api-key',
+      }
     })
 
 
@@ -63,6 +87,12 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       status: false,
       message: "An error occured while fetching student data"
-    }, { status: 500 })
+    }, {
+      status: 500, headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-api-key',
+      }
+    })
   }
 }
