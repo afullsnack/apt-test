@@ -63,5 +63,6 @@ If you have any issues or questions, reach out to us on [Discord](https://discor
 - [ ] Pull changes / Load new changes
   - [ ] Test question component refactored
   - [ ] Test solution component refactored and fixed
+  - [ ] Add student-info route handler
 - [ ] Make random small changes
 - [ ] Make PR and merge
